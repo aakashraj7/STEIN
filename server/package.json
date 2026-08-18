@@ -1,0 +1,20 @@
+{
+  "name": "stein-server",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "STEIN investigation platform backend",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "node --test tests/**/*.test.js",
+    "seed": "node seed/run.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "mongoose": "^8.15.1",
+    "neo4j-driver": "^5.28.1"
+  }
+}

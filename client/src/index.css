@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── STEIN Base ─────────────────────────────────── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1e293b #0a0e1a;
+}
+
+::selection {
+  background: rgba(59, 130, 246, 0.3);
+}
+
+/* ── Utility classes ───────────────────────────── */
+@layer components {
+  .stein-card {
+    @apply bg-stein-surface border border-stein-border rounded-lg p-4;
+  }
+  .stein-badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium;
+  }
+  .stein-badge-live {
+    @apply stein-badge bg-emerald-500/20 text-emerald-400 border border-emerald-500/30;
+  }
+  .stein-badge-demo {
+    @apply stein-badge bg-amber-500/20 text-amber-400 border border-amber-500/30;
+  }
+  .stein-badge-suspicious {
+    @apply stein-badge bg-red-500/20 text-red-400 border border-red-500/30;
+  }
+  .stein-badge-review {
+    @apply stein-badge bg-amber-500/20 text-amber-400 border border-amber-500/30;
+  }
+  .stein-badge-benign {
+    @apply stein-badge bg-slate-500/20 text-slate-400 border border-slate-500/30;
+  }
+  .stein-btn {
+    @apply px-4 py-2 rounded-lg font-medium text-sm transition-all duration-150;
+  }
+  .stein-btn-primary {
+    @apply stein-btn bg-stein-accent hover:bg-blue-600 text-white;
+  }
+  .stein-btn-danger {
+    @apply stein-btn bg-stein-danger/20 hover:bg-red-600 text-red-400 hover:text-white border border-red-500/30;
+  }
+  .stein-btn-success {
+    @apply stein-btn bg-stein-success/20 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/30;
+  }
+}
