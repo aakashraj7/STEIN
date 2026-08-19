@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../api/client';
+import {
+  ShieldCheck,
+  Search,
+  Lock,
+  AlertTriangle,
+  CheckCircle2,
+  ShieldAlert,
+  RefreshCw,
+  FileCode,
+  Zap,
+} from 'lucide-react';
 
 export default function AuditLogPage() {
   const [logs, setLogs] = useState([]);
@@ -47,20 +58,24 @@ export default function AuditLogPage() {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 max-w-7xl mx-auto">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-stein-text">Tamper-Evident Audit Log</h1>
-          <p className="text-stein-text-dim text-sm mt-1">
+          <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+            <ShieldCheck className="w-6 h-6 text-cyan-400" />
+            <span>Tamper-Evident Audit Log</span>
+          </h1>
+          <p className="text-slate-400 text-xs mt-1">
             Cryptographic SHA-256 hash-chained immutable audit sequence
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
           <button
             onClick={handleVerifyChain}
-            className="stein-btn-primary text-sm"
+            className="stein-btn-cyan text-xs"
           >
-            🔍 Verify Hash Chain Integrity
+            <Search className="w-3.5 h-3.5 text-cyan-300" />
+            <span>Verify Hash Chain Integrity</span>
           </button>
         </div>
       </div>
@@ -69,61 +84,74 @@ export default function AuditLogPage() {
       {verifyStatus && (
         <div className={`stein-card border ${
           verifyStatus.valid
-            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-            : 'bg-red-500/10 border-red-500/30 text-red-400'
+            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-cyber-emerald'
+            : 'bg-red-500/10 border-red-500/30 text-red-400 shadow-cyber-red'
         } space-y-2`}>
           <div className="flex justify-between items-center">
-            <h2 className="text-lg font-bold flex items-center gap-2">
-              {verifyStatus.valid ? '✓ AUDIT HASH CHAIN VALID' : '❌ AUDIT HASH CHAIN TAMPERED'}
+            <h2 className="text-sm font-bold flex items-center gap-2 font-mono">
+              {verifyStatus.valid ? (
+                <>
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                  <span>AUDIT HASH CHAIN VALID (ZERO TAMPERING DETECTED)</span>
+                </>
+              ) : (
+                <>
+                  <ShieldAlert className="w-5 h-5 text-red-400" />
+                  <span>AUDIT HASH CHAIN TAMPERED (TAMPERING DETECTED)</span>
+                </>
+              )}
             </h2>
-            <span className="text-xs font-mono font-semibold">
+            <span className="text-xs font-mono font-bold bg-slate-950 px-3 py-1 rounded border border-slate-800">
               Entries Verified: {verifyStatus.entries}
             </span>
           </div>
-          <p className="text-sm font-mono">{verifyStatus.details}</p>
+          <p className="text-xs font-mono text-slate-300">{verifyStatus.details}</p>
         </div>
       )}
 
       {/* Audit Table */}
-      <div className="stein-card overflow-hidden">
+      <div className="stein-card p-0 border border-slate-800 overflow-hidden">
         {loading ? (
-          <div className="p-6 text-center text-stein-text-dim text-sm">Loading audit entries...</div>
+          <div className="p-8 text-center text-slate-400 text-xs flex justify-center items-center gap-2">
+            <RefreshCw className="w-4 h-4 animate-spin text-cyan-400" />
+            <span>Verifying audit block sequence...</span>
+          </div>
         ) : logs.length === 0 ? (
-          <div className="p-6 text-center text-stein-text-dim text-sm">No audit logs recorded. Seed scenario first.</div>
+          <div className="p-8 text-center text-slate-500 text-xs">No audit logs recorded. Seed scenario first on Dashboard.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs font-mono">
-              <thead className="bg-stein-surface-alt text-stein-text-dim uppercase border-b border-stein-border">
+              <thead className="bg-slate-950 text-slate-400 font-bold uppercase tracking-wider text-[10px] border-b border-slate-800">
                 <tr>
-                  <th className="py-3 px-3">Event Type</th>
-                  <th className="py-3 px-3">Actor</th>
-                  <th className="py-3 px-3">Previous Hash</th>
-                  <th className="py-3 px-3">Current Hash</th>
-                  <th className="py-3 px-3">Timestamp</th>
-                  <th className="py-3 px-3 text-right">Demo Action</th>
+                  <th className="py-3.5 px-4">Event Type</th>
+                  <th className="py-3.5 px-4">Actor</th>
+                  <th className="py-3.5 px-4">Previous Block Hash</th>
+                  <th className="py-3.5 px-4">Current Block Hash</th>
+                  <th className="py-3.5 px-4">Timestamp</th>
+                  <th className="py-3.5 px-4 text-right">Tamper Demo</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-stein-border/40">
-                {logs.map((entry, idx) => (
-                  <tr key={entry.eventId} className="hover:bg-white/5 transition-colors">
-                    <td className="py-3 px-3 font-semibold text-stein-accent-bright">
+              <tbody className="divide-y divide-slate-800/60 bg-slate-900/40 text-slate-200">
+                {logs.map((entry) => (
+                  <tr key={entry.eventId} className="hover:bg-slate-800/40 transition-colors">
+                    <td className="py-3.5 px-4 font-bold text-cyan-300">
                       {entry.eventType}
                     </td>
-                    <td className="py-3 px-3 text-stein-text-dim">{entry.actor}</td>
-                    <td className="py-3 px-3 text-stein-text-dim truncate max-w-[120px]">
-                      {entry.previousHash?.substring(0, 12)}...
+                    <td className="py-3.5 px-4 text-slate-400">{entry.actor}</td>
+                    <td className="py-3.5 px-4 text-slate-500 truncate max-w-[140px]">
+                      {entry.previousHash?.substring(0, 14)}...
                     </td>
-                    <td className="py-3 px-3 text-stein-cyan font-bold truncate max-w-[140px]">
-                      {entry.currentHash?.substring(0, 14)}...
+                    <td className="py-3.5 px-4 text-emerald-400 font-bold truncate max-w-[160px]">
+                      {entry.currentHash?.substring(0, 16)}...
                     </td>
-                    <td className="py-3 px-3 text-stein-text-dim">
+                    <td className="py-3.5 px-4 text-slate-400 text-[11px]">
                       {new Date(entry.timestamp).toLocaleTimeString()}
                     </td>
-                    <td className="py-3 px-3 text-right">
+                    <td className="py-3.5 px-4 text-right">
                       <button
                         onClick={() => handleTamperDemo(entry.eventId)}
                         disabled={tampering}
-                        className="text-[10px] text-red-400 hover:text-red-300 underline"
+                        className="text-[10px] text-red-400 hover:text-red-300 hover:underline font-bold"
                       >
                         [Tamper Entry]
                       </button>
