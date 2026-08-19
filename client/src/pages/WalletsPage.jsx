@@ -1,5 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../api/client';
+import {
+  WalletCards,
+  Search,
+  Zap,
+  RefreshCw,
+  AlertTriangle,
+  CheckCircle2,
+  ArrowUpRight,
+  ArrowDownLeft,
+  Coins,
+  ShieldAlert,
+  Filter,
+  ExternalLink,
+} from 'lucide-react';
 
 export default function WalletsPage() {
   const [wallets, setWallets] = useState([]);
@@ -73,72 +87,91 @@ export default function WalletsPage() {
   });
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-6 max-w-7xl mx-auto">
       {/* Header & Investigation Search Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-stein-text">Ethereum Wallet Intelligence</h1>
-          <p className="text-stein-text-dim text-sm mt-1">
+          <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+            <WalletCards className="w-6 h-6 text-cyan-400" />
+            <span>Ethereum Wallet Intelligence</span>
+          </h1>
+          <p className="text-slate-400 text-xs mt-1">
             Public transaction analysis &amp; deterministic heuristics (Normal ETH &amp; ERC-20 Token Transfers)
           </p>
         </div>
 
         {/* Investigate Address Form */}
-        <form onSubmit={handleAddWallet} className="flex gap-2">
-          <input
-            type="text"
-            placeholder="0x... (Investigate ETH address)"
-            value={searchAddress}
-            onChange={(e) => setSearchAddress(e.target.value)}
-            className="px-3 py-1.5 text-xs font-mono bg-stein-surface-alt border border-stein-border rounded text-stein-text placeholder-stein-text-dim w-72 focus:outline-none focus:border-stein-cyan"
-          />
+        <form onSubmit={handleAddWallet} className="flex items-center gap-2">
+          <div className="relative">
+            <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="0x... (Investigate ETH address)"
+              value={searchAddress}
+              onChange={(e) => setSearchAddress(e.target.value)}
+              className="pl-9 pr-3 py-2 text-xs font-mono bg-slate-900 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 w-72 focus:outline-none focus:border-cyan-500"
+            />
+          </div>
           <button
             type="submit"
             disabled={analyzing}
-            className="px-4 py-1.5 text-xs font-semibold bg-stein-cyan hover:bg-stein-cyan/80 text-black rounded transition-all disabled:opacity-50"
+            className="stein-btn-cyan text-xs shrink-0"
           >
-            {analyzing ? 'Analyzing...' : 'Investigate'}
+            {analyzing ? (
+              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Search className="w-3.5 h-3.5" />
+            )}
+            <span>{analyzing ? 'Analyzing...' : 'Investigate Address'}</span>
           </button>
         </form>
       </div>
 
       {errorMsg && (
-        <div className="p-3 bg-red-500/10 border border-red-500/30 rounded text-red-400 text-xs">
-          {errorMsg}
+        <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-xs flex items-center gap-2">
+          <AlertTriangle className="w-4 h-4 shrink-0" />
+          <span>{errorMsg}</span>
         </div>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Wallet List */}
-        <div className="stein-card space-y-3">
-          <h2 className="text-sm font-semibold text-stein-text border-b border-stein-border pb-2">
-            Tracked Wallets ({wallets.length})
-          </h2>
+        {/* Wallet List Side Panel */}
+        <div className="stein-card border-slate-800 space-y-3">
+          <div className="flex items-center gap-2 border-b border-slate-800 pb-2.5">
+            <Coins className="w-4 h-4 text-cyan-400" />
+            <h2 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
+              Tracked Wallets ({wallets.length})
+            </h2>
+          </div>
+
           {loading ? (
-            <div className="text-stein-text-dim text-sm py-4">Loading wallets...</div>
+            <div className="text-slate-400 text-xs py-6 text-center flex justify-center items-center gap-2">
+              <RefreshCw className="w-4 h-4 animate-spin text-cyan-400" />
+              <span>Loading wallets...</span>
+            </div>
           ) : wallets.length === 0 ? (
-            <div className="text-stein-text-dim text-sm py-4">No wallets found. Add an address above.</div>
+            <div className="text-slate-500 text-xs py-6 text-center">No wallets found. Enter an address above.</div>
           ) : (
             <div className="space-y-2 max-h-[600px] overflow-y-auto pr-1">
               {wallets.map((w) => (
                 <div
                   key={w._id}
                   onClick={() => setSelectedWallet(w)}
-                  className={`p-3 rounded-lg border cursor-pointer transition-all ${
+                  className={`p-3 rounded-xl border cursor-pointer transition-all ${
                     selectedWallet?._id === w._id
-                      ? 'bg-stein-accent/10 border-stein-accent text-stein-text'
-                      : 'bg-stein-surface-alt border-stein-border text-stein-text-dim hover:text-stein-text'
+                      ? 'bg-slate-900 border-cyan-500/60 shadow-cyber-cyan text-white'
+                      : 'bg-slate-950/60 border-slate-800/80 text-slate-400 hover:text-slate-200 hover:border-slate-700'
                   }`}
                 >
                   <div className="flex justify-between items-center text-xs font-mono">
-                    <span className="font-semibold">{w.address.substring(0, 10)}...{w.address.substring(34)}</span>
-                    <span className={`stein-badge ${w.riskScore >= 0.5 ? 'bg-red-500/20 text-red-400' : 'bg-amber-500/20 text-amber-400'}`}>
+                    <span className="font-bold">{w.address.substring(0, 10)}...{w.address.substring(34)}</span>
+                    <span className={`stein-badge text-[10px] ${w.riskScore >= 0.5 ? 'stein-badge-suspicious' : 'stein-badge-review'}`}>
                       Risk: {w.riskScore || 0}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center text-[10px] text-stein-text-dim mt-1.5">
-                    <span>Vendor: {w.vendorId?.name || 'Unassigned'}</span>
-                    <span className="text-stein-cyan">{w.transactions?.length || 0} txs</span>
+                  <div className="flex justify-between items-center text-[10px] text-slate-400 mt-1.5 font-sans">
+                    <span>Vendor: <strong className="text-slate-200">{w.vendorId?.name || 'Unassigned'}</strong></span>
+                    <span className="text-cyan-400 font-mono">{w.transactions?.length || 0} txs</span>
                   </div>
                 </div>
               ))}
@@ -150,45 +183,46 @@ export default function WalletsPage() {
         <div className="md:col-span-2 space-y-6">
           {selectedWallet ? (
             <>
-              {/* Overview Card */}
-              <div className="stein-card space-y-4">
+              {/* Address Overview Card */}
+              <div className="stein-card border-slate-800 space-y-4 relative overflow-hidden">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                   <div>
-                    <span className="text-xs uppercase text-stein-text-dim font-semibold">Address Identifier</span>
-                    <h2 className="text-base md:text-lg font-mono font-bold text-stein-warning break-all mt-0.5">
+                    <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Address Identifier</span>
+                    <h2 className="text-sm md:text-base font-mono font-bold text-cyan-300 break-all mt-0.5">
                       {selectedWallet.address}
                     </h2>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 shrink-0">
                     <button
                       onClick={handleRunAnalysis}
                       disabled={analyzing}
-                      className="px-3 py-1 text-xs font-semibold bg-stein-surface-alt border border-stein-border hover:border-stein-cyan text-stein-cyan rounded transition-all disabled:opacity-50"
+                      className="stein-btn-secondary text-xs"
                     >
-                      {analyzing ? 'Refreshing...' : '⚡ Sync Etherscan & Analyze'}
+                      {analyzing ? <RefreshCw className="w-3.5 h-3.5 animate-spin text-cyan-400" /> : <Zap className="w-3.5 h-3.5 text-amber-400" />}
+                      <span>{analyzing ? 'Refreshing...' : 'Sync Etherscan & Analyze'}</span>
                     </button>
-                    <span className="stein-badge bg-amber-500/20 text-amber-400 font-bold text-sm px-3 py-1">
+                    <span className="stein-badge-suspicious text-xs px-3 py-1 font-mono font-bold">
                       Risk Score: {selectedWallet.riskScore}
                     </span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs pt-3 border-t border-stein-border">
-                  <div>
-                    <span className="text-stein-text-dim">Blockchain:</span>
-                    <p className="font-semibold text-stein-text mt-0.5">{selectedWallet.blockchain}</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs pt-3 border-t border-slate-800">
+                  <div className="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800">
+                    <span className="text-slate-500 text-[10px] uppercase font-bold block">Blockchain</span>
+                    <p className="font-bold text-slate-100 mt-0.5 font-mono">{selectedWallet.blockchain}</p>
                   </div>
-                  <div>
-                    <span className="text-stein-text-dim">Vendor Owner:</span>
-                    <p className="font-semibold text-stein-accent-bright mt-0.5">{selectedWallet.vendorId?.name || 'Unassigned'}</p>
+                  <div className="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800">
+                    <span className="text-slate-500 text-[10px] uppercase font-bold block">Vendor Owner</span>
+                    <p className="font-bold text-cyan-300 mt-0.5">{selectedWallet.vendorId?.name || 'Unassigned'}</p>
                   </div>
-                  <div>
-                    <span className="text-stein-text-dim">Cached Txs:</span>
-                    <p className="font-semibold text-stein-text mt-0.5">{selectedWallet.transactions?.length || 0}</p>
+                  <div className="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800">
+                    <span className="text-slate-500 text-[10px] uppercase font-bold block">Cached Txs</span>
+                    <p className="font-bold text-slate-100 mt-0.5 font-mono">{selectedWallet.transactions?.length || 0}</p>
                   </div>
-                  <div>
-                    <span className="text-stein-text-dim">Data Source:</span>
-                    <p className={`font-semibold mt-0.5 ${selectedWallet.dataSource === 'ETHERSCAN' ? 'text-emerald-400' : 'text-amber-400'}`}>
+                  <div className="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800">
+                    <span className="text-slate-500 text-[10px] uppercase font-bold block">Data Source</span>
+                    <p className={`font-bold mt-0.5 font-mono ${selectedWallet.dataSource === 'ETHERSCAN' ? 'text-emerald-400' : 'text-amber-400'}`}>
                       {selectedWallet.dataSource}
                     </p>
                   </div>
@@ -196,74 +230,85 @@ export default function WalletsPage() {
               </div>
 
               {/* Heuristics Analysis */}
-              <div className="stein-card space-y-4">
-                <h3 className="text-base font-semibold text-stein-text border-b border-stein-border pb-2">
-                  Deterministic Heuristic Flags
-                </h3>
+              <div className="stein-card border-slate-800 space-y-4">
+                <div className="flex items-center gap-2 border-b border-slate-800 pb-2.5">
+                  <ShieldAlert className="w-4 h-4 text-cyan-400" />
+                  <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
+                    Deterministic Heuristic Risk Flags
+                  </h3>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                  <div className={`p-3 rounded border ${selectedWallet.heuristics?.rapidFanOut ? 'bg-red-500/10 border-red-500/30 text-red-400' : 'bg-stein-surface-alt border-stein-border text-stein-text-dim'}`}>
-                    <div className="font-semibold flex items-center justify-between">
+                  <div className={`p-3 rounded-xl border ${selectedWallet.heuristics?.rapidFanOut ? 'bg-red-500/10 border-red-500/40 text-red-400 shadow-cyber-red' : 'bg-slate-950/60 border-slate-800 text-slate-400'}`}>
+                    <div className="font-bold flex items-center justify-between">
                       <span>Rapid Fan-out</span>
-                      {selectedWallet.heuristics?.rapidFanOut && <span>⚠️</span>}
+                      {selectedWallet.heuristics?.rapidFanOut && <AlertTriangle className="w-3.5 h-3.5 text-red-400" />}
                     </div>
                     <div className="text-[10px] mt-1">
                       {selectedWallet.heuristics?.rapidFanOut ? 'FLAGGED: High velocity transfers' : 'Normal transfer velocity'}
                     </div>
                   </div>
-                  <div className={`p-3 rounded border ${selectedWallet.heuristics?.dormancySpike ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' : 'bg-stein-surface-alt border-stein-border text-stein-text-dim'}`}>
-                    <div className="font-semibold flex items-center justify-between">
+
+                  <div className={`p-3 rounded-xl border ${selectedWallet.heuristics?.dormancySpike ? 'bg-amber-500/10 border-amber-500/40 text-amber-300' : 'bg-slate-950/60 border-slate-800 text-slate-400'}`}>
+                    <div className="font-bold flex items-center justify-between">
                       <span>Dormancy Spike</span>
-                      {selectedWallet.heuristics?.dormancySpike && <span>⚠️</span>}
+                      {selectedWallet.heuristics?.dormancySpike && <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />}
                     </div>
                     <div className="text-[10px] mt-1">
-                      {selectedWallet.heuristics?.dormancySpike ? 'FLAGGED: Sudden reactivation after dormancy' : 'Consistent account activity'}
+                      {selectedWallet.heuristics?.dormancySpike ? 'FLAGGED: Sudden reactivation' : 'Consistent account activity'}
                     </div>
                   </div>
-                  <div className={`p-3 rounded border ${selectedWallet.heuristics?.labelledInteraction ? 'bg-purple-500/10 border-purple-500/30 text-purple-400' : 'bg-stein-surface-alt border-stein-border text-stein-text-dim'}`}>
-                    <div className="font-semibold flex items-center justify-between">
+
+                  <div className={`p-3 rounded-xl border ${selectedWallet.heuristics?.labelledInteraction ? 'bg-purple-500/10 border-purple-500/40 text-purple-300' : 'bg-slate-950/60 border-slate-800 text-slate-400'}`}>
+                    <div className="font-bold flex items-center justify-between">
                       <span>Labelled Interaction</span>
-                      {selectedWallet.heuristics?.labelledInteraction && <span>⚠️</span>}
+                      {selectedWallet.heuristics?.labelledInteraction && <AlertTriangle className="w-3.5 h-3.5 text-purple-400" />}
                     </div>
                     <div className="text-[10px] mt-1">
-                      {selectedWallet.heuristics?.labelledInteraction ? 'FLAGGED: Interaction with labelled address' : 'No known labelled addresses'}
+                      {selectedWallet.heuristics?.labelledInteraction ? 'FLAGGED: Known illicit address' : 'No known labelled interaction'}
                     </div>
                   </div>
                 </div>
 
                 {selectedWallet.heuristics?.suspiciousPatterns?.length > 0 && (
-                  <div className="pt-2">
-                    <span className="text-xs font-semibold text-stein-text">Detected Suspicious Patterns:</span>
-                    <ul className="list-disc list-inside text-xs text-stein-text-dim space-y-1 mt-1">
+                  <div className="pt-2 border-t border-slate-800/80">
+                    <span className="text-xs font-bold text-slate-200 block mb-1">Detected Suspicious Patterns:</span>
+                    <ul className="space-y-1">
                       {selectedWallet.heuristics.suspiciousPatterns.map((pat, idx) => (
-                        <li key={idx}>{pat}</li>
+                        <li key={idx} className="text-xs text-amber-300/90 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-md flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                          <span>{pat}</span>
+                        </li>
                       ))}
                     </ul>
                   </div>
                 )}
               </div>
 
-              {/* Transactions Table with Filter Tabs */}
-              <div className="stein-card space-y-3">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-stein-border pb-2 gap-2">
-                  <h3 className="text-base font-semibold text-stein-text">
-                    Transaction History ({filteredTransactions.length})
+              {/* Transactions Table */}
+              <div className="stein-card p-0 border border-slate-800 overflow-hidden">
+                <div className="p-4 bg-slate-950/80 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <h3 className="text-xs font-bold text-slate-100 uppercase tracking-wider flex items-center gap-2">
+                    <Coins className="w-4 h-4 text-cyan-400" />
+                    <span>Transaction History ({filteredTransactions.length})</span>
                   </h3>
-                  <div className="flex bg-stein-surface-alt p-0.5 rounded border border-stein-border text-xs font-mono">
+
+                  <div className="flex bg-slate-900 p-1 rounded-lg border border-slate-800 text-xs font-mono">
                     <button
                       onClick={() => setTxFilter('ALL')}
-                      className={`px-2.5 py-1 rounded transition-all ${txFilter === 'ALL' ? 'bg-stein-cyan text-black font-bold' : 'text-stein-text-dim hover:text-stein-text'}`}
+                      className={`px-3 py-1 rounded-md transition-all text-[10px] font-bold ${txFilter === 'ALL' ? 'bg-cyan-500 text-slate-950' : 'text-slate-400 hover:text-slate-200'}`}
                     >
                       ALL
                     </button>
                     <button
                       onClick={() => setTxFilter('NORMAL')}
-                      className={`px-2.5 py-1 rounded transition-all ${txFilter === 'NORMAL' ? 'bg-stein-cyan text-black font-bold' : 'text-stein-text-dim hover:text-stein-text'}`}
+                      className={`px-3 py-1 rounded-md transition-all text-[10px] font-bold ${txFilter === 'NORMAL' ? 'bg-cyan-500 text-slate-950' : 'text-slate-400 hover:text-slate-200'}`}
                     >
                       ETH NORMAL
                     </button>
                     <button
                       onClick={() => setTxFilter('ERC20')}
-                      className={`px-2.5 py-1 rounded transition-all ${txFilter === 'ERC20' ? 'bg-stein-cyan text-black font-bold' : 'text-stein-text-dim hover:text-stein-text'}`}
+                      className={`px-3 py-1 rounded-md transition-all text-[10px] font-bold ${txFilter === 'ERC20' ? 'bg-cyan-500 text-slate-950' : 'text-slate-400 hover:text-slate-200'}`}
                     >
                       ERC-20 TOKENS
                     </button>
@@ -272,48 +317,54 @@ export default function WalletsPage() {
 
                 <div className="overflow-x-auto max-h-[350px] overflow-y-auto">
                   <table className="w-full text-left text-xs font-mono">
-                    <thead className="text-stein-text-dim border-b border-stein-border sticky top-0 bg-stein-surface">
+                    <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800 sticky top-0">
                       <tr>
-                        <th className="py-2 px-2">Type</th>
-                        <th className="py-2 px-2">From</th>
-                        <th className="py-2 px-2">To</th>
-                        <th className="py-2 px-2">Value</th>
-                        <th className="py-2 px-2">Timestamp</th>
+                        <th className="py-3 px-4">Type</th>
+                        <th className="py-3 px-4">From Address</th>
+                        <th className="py-3 px-4">To Address</th>
+                        <th className="py-3 px-4">Value</th>
+                        <th className="py-3 px-4">Timestamp</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-stein-border/40">
+                    <tbody className="divide-y divide-slate-800/60 bg-slate-900/40 text-slate-200">
                       {filteredTransactions.length === 0 ? (
                         <tr>
-                          <td colSpan={5} className="py-4 text-center text-stein-text-dim">
-                            No transactions matching filter.
+                          <td colSpan={5} className="py-6 text-center text-slate-500 font-sans">
+                            No transactions matching filter criteria.
                           </td>
                         </tr>
                       ) : (
                         filteredTransactions.map((tx, idx) => (
-                          <tr key={idx} className="hover:bg-white/5">
-                            <td className="py-2 px-2">
-                              <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${tx.type === 'ERC20' ? 'bg-purple-500/20 text-purple-400' : 'bg-cyan-500/20 text-cyan-400'}`}>
+                          <tr key={idx} className="hover:bg-slate-800/40 transition-colors">
+                            <td className="py-3 px-4">
+                              <span className={`px-2 py-0.5 rounded text-[9px] font-bold border ${tx.type === 'ERC20' ? 'bg-purple-500/10 text-purple-400 border-purple-500/30' : 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30'}`}>
                                 {tx.type || 'NORMAL'}
                               </span>
                             </td>
-                            <td className="py-2 px-2 text-stein-text-dim">
+                            <td className="py-3 px-4 text-slate-400">
                               {tx.from?.toLowerCase() === selectedWallet.address.toLowerCase() ? (
-                                <span className="text-amber-400 font-semibold">OUT (Self)</span>
+                                <span className="text-amber-400 font-bold flex items-center gap-1">
+                                  <ArrowUpRight className="w-3.5 h-3.5" />
+                                  <span>OUT (Self)</span>
+                                </span>
                               ) : (
-                                <span>{tx.from?.substring(0, 10)}...</span>
+                                <span>{tx.from?.substring(0, 12)}...</span>
                               )}
                             </td>
-                            <td className="py-2 px-2 text-stein-text-dim">
+                            <td className="py-3 px-4 text-slate-400">
                               {tx.to?.toLowerCase() === selectedWallet.address.toLowerCase() ? (
-                                <span className="text-emerald-400 font-semibold">IN (Self)</span>
+                                <span className="text-emerald-400 font-bold flex items-center gap-1">
+                                  <ArrowDownLeft className="w-3.5 h-3.5" />
+                                  <span>IN (Self)</span>
+                                </span>
                               ) : (
-                                <span>{tx.to?.substring(0, 10)}...</span>
+                                <span>{tx.to?.substring(0, 12)}...</span>
                               )}
                             </td>
-                            <td className="py-2 px-2 text-stein-warning font-semibold">
+                            <td className="py-3 px-4 text-amber-300 font-bold">
                               {tx.value} {tx.tokenSymbol || 'ETH'}
                             </td>
-                            <td className="py-2 px-2 text-stein-text-dim text-[10px]">
+                            <td className="py-3 px-4 text-slate-500 text-[10px]">
                               {tx.timestamp ? new Date(tx.timestamp).toLocaleString() : 'N/A'}
                             </td>
                           </tr>
@@ -325,7 +376,7 @@ export default function WalletsPage() {
               </div>
             </>
           ) : (
-            <div className="stein-card text-center text-stein-text-dim py-12">
+            <div className="stein-card text-center text-slate-500 py-16">
               Select a wallet from the left panel to inspect details or enter an address above.
             </div>
           )}
