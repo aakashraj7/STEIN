@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import cytoscape from 'cytoscape';
 import { Network, Sparkles, RefreshCw } from 'lucide-react';
 
-export default function CytoscapeGraph({ data, onNodeClick, onSeed }) {
+export default function CytoscapeGraph({ data, onNodeClick, onSeed, searchQuery }) {
   const containerRef = useRef(null);
   const cyRef = useRef(null);
 
@@ -56,63 +56,65 @@ export default function CytoscapeGraph({ data, onNodeClick, onSeed }) {
         {
           selector: 'node',
           style: {
-            'background-color': '#1e293b',
+            'background-color': '#ffffff',
             'label': 'data(label)',
-            'color': '#cbd5e1',
-            'font-size': '10px',
+            'color': '#0f172a',
+            'font-size': '11px',
             'font-family': 'system-ui, sans-serif',
             'font-weight': '600',
             'text-valign': 'bottom',
             'text-margin-y': 5,
             'width': 28,
             'height': 28,
-            'border-width': 2,
-            'border-color': '#3b82f6',
-            'text-background-opacity': 0,
+            'border-width': 2.5,
+            'border-color': '#2563eb',
+            'text-background-color': '#ffffff',
+            'text-background-opacity': 0.85,
+            'text-background-padding': 2,
           },
         },
         {
           selector: 'node[type = "Vendor"]',
           style: {
-            'background-color': '#1e1b4b',
-            'border-color': '#ef4444',
-            'color': '#fca5a5',
+            'background-color': '#fef2f2',
+            'border-color': '#dc2626',
+            'color': '#991b1b',
             'shape': 'ellipse',
           },
         },
         {
           selector: 'node[type = "Wallet"]',
           style: {
-            'background-color': '#1c1917',
-            'border-color': '#f59e0b',
-            'color': '#fde68a',
+            'background-color': '#fffbeb',
+            'border-color': '#d97706',
+            'color': '#92400e',
             'shape': 'diamond',
           },
         },
         {
           selector: 'node[type = "Message"]',
           style: {
-            'background-color': '#0f172a',
-            'border-color': '#3b82f6',
-            'color': '#93c5fd',
+            'background-color': '#eff6ff',
+            'border-color': '#2563eb',
+            'color': '#1e40af',
             'shape': 'round-rectangle',
           },
         },
         {
           selector: 'node[type = "Case"]',
           style: {
-            'background-color': '#064e3b',
-            'border-color': '#10b981',
-            'color': '#a7f3d0',
+            'background-color': '#ecfdf5',
+            'border-color': '#059669',
+            'color': '#065f46',
             'shape': 'rectangle',
           },
         },
         {
           selector: 'node[type = "Channel"]',
           style: {
-            'background-color': '#3b0764',
-            'border-color': '#a855f7',
-            'color': '#e9d5ff',
+            'background-color': '#faf5ff',
+            'border-color': '#9333ea',
+            'color': '#6b21a8',
             'shape': 'pentagon',
           },
         },
@@ -120,13 +122,13 @@ export default function CytoscapeGraph({ data, onNodeClick, onSeed }) {
           selector: 'edge',
           style: {
             'width': 1.5,
-            'line-color': '#334155',
-            'target-arrow-color': '#475569',
+            'line-color': '#94a3b8',
+            'target-arrow-color': '#64748b',
             'target-arrow-shape': 'triangle',
-            'arrow-scale': 0.8,
+            'arrow-scale': 0.85,
             'curve-style': 'bezier',
             'label': 'data(label)',
-            'color': '#64748b',
+            'color': '#475569',
             'font-size': '8px',
             'font-family': 'monospace',
             'text-rotation': 'autorotate',
@@ -137,11 +139,20 @@ export default function CytoscapeGraph({ data, onNodeClick, onSeed }) {
         {
           selector: ':selected',
           style: {
-            'border-width': 3,
-            'border-color': '#38bdf8',
-            'line-color': '#38bdf8',
-            'target-arrow-color': '#38bdf8',
+            'border-width': 4,
+            'border-color': '#2563eb',
+            'line-color': '#2563eb',
+            'target-arrow-color': '#2563eb',
             'opacity': 1,
+          },
+        },
+        {
+          selector: '.highlighted',
+          style: {
+            'border-width': 5,
+            'border-color': '#2563eb',
+            'width': 34,
+            'height': 34,
           },
         },
       ],
@@ -190,19 +201,49 @@ export default function CytoscapeGraph({ data, onNodeClick, onSeed }) {
     };
   }, [data, hasNodes, onNodeClick]);
 
+  // Handle Search Query Auto-Zoom & Highlighting
+  useEffect(() => {
+    if (!cyRef.current || !hasNodes) return;
+    const cy = cyRef.current;
+    cy.nodes().removeClass('highlighted');
+    cy.nodes().unselect();
+
+    if (!searchQuery || !searchQuery.trim()) return;
+
+    const q = searchQuery.trim().toLowerCase();
+    const matchingNodes = cy.nodes().filter((node) => {
+      const label = (node.data('label') || '').toLowerCase();
+      const raw = node.data('raw') || {};
+      const name = (raw.properties?.name || '').toLowerCase();
+      const addr = (raw.properties?.address || '').toLowerCase();
+      const title = (raw.properties?.title || '').toLowerCase();
+      return label.includes(q) || name.includes(q) || addr.includes(q) || title.includes(q);
+    });
+
+    if (matchingNodes.length > 0) {
+      matchingNodes.select();
+      matchingNodes.addClass('highlighted');
+      cy.animate({
+        zoom: 1.4,
+        center: { eles: matchingNodes[0] },
+        duration: 500,
+      });
+    }
+  }, [searchQuery, hasNodes]);
+
   return (
-    <div className="relative w-full h-[580px] bg-[#111827] border border-slate-800 rounded-xl overflow-hidden shadow-sm bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px]">
+    <div className="relative w-full h-[580px] bg-slate-50 border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:24px_24px]">
       {hasNodes ? (
         <div ref={containerRef} className="w-full h-full" />
       ) : (
-        <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center space-y-4 bg-[#111827]">
-          <div className="w-12 h-12 rounded-xl bg-blue-950/40 border border-blue-800/50 flex items-center justify-center text-blue-400">
+        <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center space-y-4 bg-white">
+          <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
             <Network className="w-6 h-6" />
           </div>
 
           <div className="max-w-md space-y-1.5">
-            <h3 className="text-base font-bold text-white tracking-tight">Neo4j Link Graph Workspace</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h3 className="text-base font-bold text-slate-900 tracking-tight">Neo4j Link Graph Workspace</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
               No multi-entity nodes or relationships are currently loaded. Populate synthetic intelligence to visualize live threat actors, crypto wallets, and ingested channel messages.
             </p>
           </div>
@@ -221,7 +262,7 @@ export default function CytoscapeGraph({ data, onNodeClick, onSeed }) {
 
       {/* Graph Toolbar Overlay */}
       {hasNodes && (
-        <div className="absolute top-4 left-4 bg-slate-900/90 backdrop-blur-md border border-slate-800 p-2 rounded-xl text-xs flex items-center gap-1.5 z-10">
+        <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-md border border-slate-200 shadow-sm p-1.5 rounded-lg text-xs flex items-center gap-1.5 z-10">
           <button
             onClick={() => {
               if (!cyRef.current) return;
@@ -235,7 +276,7 @@ export default function CytoscapeGraph({ data, onNodeClick, onSeed }) {
                 concentric: (n) => (n.data('type') === 'Vendor' ? 4 : n.data('type') === 'Case' ? 3 : n.data('type') === 'Wallet' ? 2 : 1),
               }).run();
             }}
-            className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold border border-slate-700"
+            className="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-semibold border border-slate-200"
           >
             Structured Rings
           </button>
@@ -251,7 +292,7 @@ export default function CytoscapeGraph({ data, onNodeClick, onSeed }) {
                 padding: 60,
               }).run();
             }}
-            className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold border border-slate-700"
+            className="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-semibold border border-slate-200"
           >
             Circle Layout
           </button>
@@ -267,7 +308,7 @@ export default function CytoscapeGraph({ data, onNodeClick, onSeed }) {
                 padding: 60,
               }).run();
             }}
-            className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold border border-slate-700"
+            className="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-semibold border border-slate-200"
           >
             Grid Matrix
           </button>
@@ -279,7 +320,7 @@ export default function CytoscapeGraph({ data, onNodeClick, onSeed }) {
                 cyRef.current.center();
               }
             }}
-            className="px-2.5 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-semibold"
+            className="px-2.5 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-semibold shadow-sm"
           >
             Reset View
           </button>
@@ -288,8 +329,8 @@ export default function CytoscapeGraph({ data, onNodeClick, onSeed }) {
 
       {/* Graph Legend Overlay */}
       {hasNodes && (
-        <div className="absolute top-4 right-4 bg-slate-900/90 backdrop-blur-md border border-slate-800 p-3 rounded-xl text-xs space-y-2 z-10 text-slate-300">
-          <div className="font-bold text-white text-[10px] uppercase tracking-wider border-b border-slate-800 pb-1">
+        <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md border border-slate-200 shadow-sm p-3 rounded-xl text-xs space-y-2 z-10 text-slate-700">
+          <div className="font-bold text-slate-900 text-[10px] uppercase tracking-wider border-b border-slate-200 pb-1">
             GRAPH LEGEND
           </div>
           <div className="flex items-center gap-2 text-[11px] font-medium">

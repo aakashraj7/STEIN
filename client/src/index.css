@@ -2,89 +2,166 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Professional Enterprise SaaS Base Styles ───────────────────── */
+/* ── Enterprise Light Theme Base Styles ───────────────────────── */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #334155 #0b0f19;
+  scrollbar-color: #cbd5e1 #f8fafc;
 }
 
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0b0f19;
+  background: #f8fafc;
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #cbd5e1;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #94a3b8;
 }
 
 ::selection {
-  background: rgba(59, 130, 246, 0.3);
-  color: #ffffff;
+  background: rgba(37, 99, 235, 0.25);
+  color: #0f172a;
 }
 
 body {
-  background-color: #0b0f19;
-  color: #f1f5f9;
+  background-color: #f8fafc;
+  color: #0f172a;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── Enterprise UI Component Library ─────────────────────────── */
+/* ── Enterprise Component Library with Micro-Animations ────────────── */
 @layer components {
   .stein-card {
-    @apply bg-[#111827] border border-slate-800 rounded-xl p-5 shadow-sm transition-colors duration-150;
+    @apply bg-white border border-slate-200/90 rounded-xl p-5 shadow-sm transition-all duration-200;
   }
   .stein-card-hover {
-    @apply stein-card hover:border-slate-700 hover:bg-[#161f33] cursor-pointer;
+    @apply stein-card hover:border-blue-400 hover:shadow-md hover:shadow-blue-500/10 hover:-translate-y-1 transition-all duration-200 cursor-pointer;
   }
 
   .stein-badge {
-    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-medium font-sans border transition-colors;
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-bold font-mono border transition-all duration-200;
   }
   .stein-badge-live {
-    @apply stein-badge bg-emerald-950/40 text-emerald-400 border-emerald-800/50;
+    @apply stein-badge bg-emerald-50 text-emerald-800 border-emerald-300;
   }
   .stein-badge-demo {
-    @apply stein-badge bg-slate-800 text-slate-300 border-slate-700;
+    @apply stein-badge bg-slate-100 text-slate-800 border-slate-300;
   }
   .stein-badge-suspicious {
-    @apply stein-badge bg-red-950/40 text-red-400 border-red-800/50;
+    @apply stein-badge bg-red-50 text-red-800 border-red-300;
   }
   .stein-badge-review {
-    @apply stein-badge bg-amber-950/40 text-amber-400 border-amber-800/50;
+    @apply stein-badge bg-amber-50 text-amber-800 border-amber-300;
   }
   .stein-badge-benign {
-    @apply stein-badge bg-slate-800 text-slate-400 border-slate-700;
+    @apply stein-badge bg-slate-100 text-slate-700 border-slate-300;
   }
   .stein-badge-cyan {
-    @apply stein-badge bg-blue-950/40 text-blue-400 border-blue-800/50;
+    @apply stein-badge bg-blue-50 text-blue-800 border-blue-300;
   }
   .stein-badge-purple {
-    @apply stein-badge bg-purple-950/40 text-purple-400 border-purple-800/50;
+    @apply stein-badge bg-purple-50 text-purple-800 border-purple-300;
   }
 
   .stein-btn {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold text-xs transition-colors duration-150 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none cursor-pointer;
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-bold text-xs transition-all duration-150 active:scale-95 hover:-translate-y-0.5 disabled:opacity-50 disabled:pointer-events-none cursor-pointer;
   }
   .stein-btn-primary {
-    @apply stein-btn bg-blue-600 hover:bg-blue-700 text-white shadow-sm;
+    @apply stein-btn bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow-md hover:shadow-blue-600/25;
   }
   .stein-btn-cyan {
-    @apply stein-btn bg-blue-600 hover:bg-blue-700 text-white shadow-sm;
+    @apply stein-btn bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow-md hover:shadow-blue-600/25;
   }
   .stein-btn-secondary {
-    @apply stein-btn bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700;
+    @apply stein-btn bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 shadow-sm font-semibold hover:border-slate-400;
   }
   .stein-btn-danger {
-    @apply stein-btn bg-red-900/40 hover:bg-red-900/60 text-red-300 border border-red-800/50;
+    @apply stein-btn bg-red-50 hover:bg-red-100 text-red-800 border border-red-300 font-semibold hover:border-red-400;
   }
   .stein-btn-success {
-    @apply stein-btn bg-emerald-900/40 hover:bg-emerald-900/60 text-emerald-300 border border-emerald-800/50;
+    @apply stein-btn bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-semibold hover:border-emerald-400;
   }
+}
+
+/* ── Micro-Animations & Motion Effects ───────────────────────── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0.3;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0.4;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes growBar {
+  from {
+    transform: scaleY(0);
+    transform-origin: bottom;
+    opacity: 0.2;
+  }
+  to {
+    transform: scaleY(1);
+    transform-origin: bottom;
+    opacity: 1;
+  }
+}
+
+@keyframes pulseRing {
+  0% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+  }
+}
+
+@keyframes floatSoft {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.2s ease-out forwards;
+}
+
+.animate-grow-bar {
+  animation: growBar 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-pulse-ring {
+  animation: pulseRing 2s infinite ease-out;
+}
+
+.animate-float-soft {
+  animation: floatSoft 3s ease-in-out infinite;
 }
