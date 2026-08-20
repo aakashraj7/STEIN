@@ -358,29 +358,65 @@ export default function MessagesPage() {
                         </div>
                       </div>
 
-                      {/* Signals & Contextual Reasons */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {(msg.classification?.reasons?.length > 0 || msg.encodingDetected) && (
-                          <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 space-y-1">
-                            <span className="font-bold text-amber-800 flex items-center gap-1.5 text-xs">
-                              <Lightbulb className="w-3.5 h-3.5 text-amber-600" />
-                              <span>Detected Contextual Signals</span>
-                            </span>
-                            <p className="text-[11px] text-amber-900 leading-relaxed font-mono">
-                              {msg.classification?.reasons?.join(' ') || (msg.classification?.signals ? msg.classification.signals.join(', ') : 'multilingual_expression.')}
-                            </p>
-                          </div>
-                        )}
+                      {/* Explainable AI: Why Flag Fired Panel (Light Enterprise Styling) */}
+                      <div className="p-4 bg-gradient-to-r from-blue-50/80 via-slate-50 to-indigo-50/80 border border-blue-200/90 rounded-xl space-y-3 shadow-sm">
+                        <div className="flex items-center justify-between border-b border-blue-200/80 pb-2.5">
+                          <span className="font-extrabold text-xs text-blue-900 flex items-center gap-2 uppercase tracking-wider">
+                            <Lightbulb className="w-4 h-4 text-blue-600 animate-pulse" />
+                            <span>EXPLAINABLE AI: WHY THIS FLAG FIRED</span>
+                          </span>
+                          <span className="font-mono text-[10px] text-blue-800 font-extrabold bg-white px-2.5 py-0.5 rounded-md border border-blue-200 shadow-2xs">
+                            RISK SCORE: {riskScore}/100
+                          </span>
+                        </div>
 
-                        {signals.length > 0 && (
-                          <div className="p-3 rounded-lg bg-blue-50 border border-blue-200 text-blue-900 space-y-1.5">
-                            <span className="font-bold text-blue-800 flex items-center gap-1.5 text-xs">
-                              <Activity className="w-3.5 h-3.5 text-blue-600" />
-                              <span>Extracted Heuristics &amp; Keywords</span>
+                        {/* Point Breakdown Badges */}
+                        <div className="flex flex-wrap gap-2 pt-0.5">
+                          {signals.includes('explicit_illicit_substance_reference') && (
+                            <span className="px-2.5 py-1 rounded-md bg-red-100 text-red-800 border border-red-300 font-mono text-[11px] font-bold flex items-center gap-1.5 shadow-2xs">
+                              <span className="w-2 h-2 rounded-full bg-red-600" />
+                              +40 Explicit Substance / Narcotics
                             </span>
-                            <div className="flex flex-wrap gap-1.5 pt-0.5">
+                          )}
+                          {(signals.includes('coded_product_reference') || signals.includes('slang_terminology')) && (
+                            <span className="px-2.5 py-1 rounded-md bg-amber-100 text-amber-900 border border-amber-300 font-mono text-[11px] font-bold flex items-center gap-1.5 shadow-2xs">
+                              <span className="w-2 h-2 rounded-full bg-amber-600" />
+                              +30 Coded Terminology / Regional Slang
+                            </span>
+                          )}
+                          {(signals.includes('private_contact_solicitation') || signals.includes('purchase_solicitation')) && (
+                            <span className="px-2.5 py-1 rounded-md bg-blue-100 text-blue-900 border border-blue-300 font-mono text-[11px] font-bold flex items-center gap-1.5 shadow-2xs">
+                              <span className="w-2 h-2 rounded-full bg-blue-600" />
+                              +20 Private Contact / DM Solicitation
+                            </span>
+                          )}
+                          {msg.extractedAddresses?.length > 0 && (
+                            <span className="px-2.5 py-1 rounded-md bg-purple-100 text-purple-900 border border-purple-300 font-mono text-[11px] font-bold flex items-center gap-1.5 shadow-2xs">
+                              <span className="w-2 h-2 rounded-full bg-purple-600" />
+                              +20 Crypto Payment Address Mention
+                            </span>
+                          )}
+                          {msg.encodingDetected && (
+                            <span className="px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-900 border border-emerald-300 font-mono text-[11px] font-bold flex items-center gap-1.5 shadow-2xs">
+                              <span className="w-2 h-2 rounded-full bg-emerald-600" />
+                              +10 Obfuscated Payload Decoded ({msg.encodingDetected})
+                            </span>
+                          )}
+                        </div>
+
+                        {/* AI Contextual Summary */}
+                        <div className="p-3 bg-white border border-blue-200/80 rounded-lg text-slate-800 text-xs leading-relaxed font-sans shadow-2xs">
+                          <strong className="text-blue-950 font-bold">AI Reasoning Summary:</strong>{' '}
+                          {msg.classification?.reasons?.join(' ') || 'Flagged based on correlated marketplace terminology, transaction solicitation, and extracted risk heuristics.'}
+                        </div>
+
+                        {/* Extracted Signals Tags */}
+                        {signals.length > 0 && (
+                          <div className="flex items-center gap-2 pt-1 border-t border-blue-200/60">
+                            <span className="text-[10px] font-bold uppercase text-slate-500 font-mono">Signals:</span>
+                            <div className="flex flex-wrap gap-1">
                               {signals.map((sig, idx) => (
-                                <span key={idx} className="px-2 py-0.5 rounded bg-white border border-blue-200 text-blue-800 font-mono text-[10px] font-bold">
+                                <span key={idx} className="px-2 py-0.5 rounded bg-white border border-slate-300 text-slate-700 font-mono text-[10px] font-bold">
                                   {sig}
                                 </span>
                               ))}

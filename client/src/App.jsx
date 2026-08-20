@@ -26,8 +26,6 @@ import StylometryPage from './pages/StylometryPage';
 import WalletsPage from './pages/WalletsPage';
 import GraphPage from './pages/GraphPage';
 import AnalysisPage from './pages/AnalysisPage';
-import ReportsPage from './pages/ReportsPage';
-import AuditLogPage from './pages/AuditLogPage';
 
 const NAV_GROUPS = [
   {
@@ -45,13 +43,6 @@ const NAV_GROUPS = [
       { to: '/graph', label: 'Link Graph', icon: Network },
       { to: '/stylometry', label: 'Stylometry Engine', icon: Feather },
       { to: '/wallets', label: 'Crypto Wallets', icon: WalletCards },
-    ],
-  },
-  {
-    title: 'REPORTS & AUDIT',
-    items: [
-      { to: '/reports', label: 'Reports', icon: FileSpreadsheet },
-      { to: '/audit', label: 'Audit Trail', icon: ShieldCheck },
     ],
   },
 ];
@@ -188,8 +179,6 @@ export default function App() {
             <Route path="/stylometry" element={<StylometryPage />} />
             <Route path="/wallets" element={<WalletsPage />} />
             <Route path="/graph" element={<GraphPage />} />
-            <Route path="/reports" element={<ReportsPage />} />
-            <Route path="/audit" element={<AuditLogPage />} />
           </Routes>
         </main>
       </div>
