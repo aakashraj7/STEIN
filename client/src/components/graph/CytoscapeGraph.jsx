@@ -13,20 +13,20 @@ export default function CytoscapeGraph({ data, onNodeClick, onSeed }) {
 
     // Convert nodes and edges into Cytoscape format
     const cyNodes = (data?.nodes || []).map((n, idx) => {
-      const label =
+      const type = n.labels?.[0] || n.type || 'Vendor';
+      let label =
         n.properties?.name ||
         n.properties?.alias ||
         n.properties?.caseNumber ||
-        (n.properties?.address ? n.properties.address.substring(0, 8) + '...' : null) ||
+        (n.properties?.address ? n.properties.address.substring(0, 6) + '...' + n.properties.address.substring(n.properties.address.length - 4) : null) ||
         n.properties?.title ||
-        n.labels?.[0] ||
         `Node #${idx + 1}`;
-      const type = n.labels?.[0] || n.type || 'Vendor';
+
       const nodeId = String(n.id ?? n._id ?? `node_${idx}`);
       return {
         data: {
           id: nodeId,
-          label: `${type}: ${label}`,
+          label,
           type,
           raw: n,
         },
@@ -38,7 +38,7 @@ export default function CytoscapeGraph({ data, onNodeClick, onSeed }) {
         id: String(e.id ?? e._id ?? `edge_${idx}`),
         source: String(e.source ?? e.from),
         target: String(e.target ?? e.to),
-        label: e.type || e.relationship || 'CONNECTED_TO',
+        label: e.type || e.relationship || 'LINKED',
         raw: e,
       },
     }));
@@ -50,108 +50,117 @@ export default function CytoscapeGraph({ data, onNodeClick, onSeed }) {
     cyRef.current = cytoscape({
       container: containerRef.current,
       elements: [...cyNodes, ...cyEdges],
+      boxSelectionEnabled: false,
+      autounselectify: false,
       style: [
         {
           selector: 'node',
           style: {
-            'background-color': '#3b82f6',
+            'background-color': '#1e293b',
             'label': 'data(label)',
-            'color': '#f8fafc',
-            'font-size': '11px',
-            'font-family': 'monospace',
-            'font-weight': 'bold',
+            'color': '#cbd5e1',
+            'font-size': '10px',
+            'font-family': 'system-ui, sans-serif',
+            'font-weight': '600',
             'text-valign': 'bottom',
-            'text-margin-y': 6,
-            'width': 36,
-            'height': 36,
-            'border-width': 2.5,
-            'border-color': '#0284c7',
-            'shadow-blur': 12,
-            'shadow-color': '#38bdf8',
-            'shadow-opacity': 0.4,
+            'text-margin-y': 5,
+            'width': 28,
+            'height': 28,
+            'border-width': 2,
+            'border-color': '#3b82f6',
+            'text-background-opacity': 0,
           },
         },
         {
           selector: 'node[type = "Vendor"]',
           style: {
-            'background-color': '#ef4444',
+            'background-color': '#1e1b4b',
+            'border-color': '#ef4444',
+            'color': '#fca5a5',
             'shape': 'ellipse',
-            'border-color': '#fca5a5',
-            'shadow-color': '#ef4444',
           },
         },
         {
           selector: 'node[type = "Wallet"]',
           style: {
-            'background-color': '#f59e0b',
+            'background-color': '#1c1917',
+            'border-color': '#f59e0b',
+            'color': '#fde68a',
             'shape': 'diamond',
-            'border-color': '#fde68a',
-            'shadow-color': '#f59e0b',
           },
         },
         {
           selector: 'node[type = "Message"]',
           style: {
-            'background-color': '#06b6d4',
+            'background-color': '#0f172a',
+            'border-color': '#3b82f6',
+            'color': '#93c5fd',
             'shape': 'round-rectangle',
-            'border-color': '#a5f3fc',
-            'shadow-color': '#06b6d4',
           },
         },
         {
           selector: 'node[type = "Case"]',
           style: {
-            'background-color': '#10b981',
+            'background-color': '#064e3b',
+            'border-color': '#10b981',
+            'color': '#a7f3d0',
             'shape': 'rectangle',
-            'border-color': '#6ee7b7',
-            'shadow-color': '#10b981',
           },
         },
         {
           selector: 'node[type = "Channel"]',
           style: {
-            'background-color': '#8b5cf6',
+            'background-color': '#3b0764',
+            'border-color': '#a855f7',
+            'color': '#e9d5ff',
             'shape': 'pentagon',
-            'border-color': '#c4b5fd',
-            'shadow-color': '#8b5cf6',
           },
         },
         {
           selector: 'edge',
           style: {
-            'width': 2,
-            'line-color': '#475569',
-            'target-arrow-color': '#38bdf8',
+            'width': 1.5,
+            'line-color': '#334155',
+            'target-arrow-color': '#475569',
             'target-arrow-shape': 'triangle',
-            'arrow-scale': 1.2,
+            'arrow-scale': 0.8,
             'curve-style': 'bezier',
             'label': 'data(label)',
-            'color': '#94a3b8',
-            'font-size': '9px',
+            'color': '#64748b',
+            'font-size': '8px',
             'font-family': 'monospace',
             'text-rotation': 'autorotate',
-            'text-margin-y': -8,
+            'text-margin-y': -6,
+            'opacity': 0.85,
           },
         },
         {
           selector: ':selected',
           style: {
-            'border-width': 4,
+            'border-width': 3,
             'border-color': '#38bdf8',
             'line-color': '#38bdf8',
             'target-arrow-color': '#38bdf8',
-            'shadow-blur': 20,
-            'shadow-opacity': 0.8,
+            'opacity': 1,
           },
         },
       ],
       layout: {
         name: 'cose',
         animate: true,
-        animationDuration: 600,
-        padding: 50,
-        nodeOverlap: 20,
-        componentSpacing: 100,
+        animationDuration: 500,
+        padding: 60,
+        nodeOverlap: 30,
+        componentSpacing: 80,
+        nodeRepulsion: () => 8000,
+        idealEdgeLength: () => 80,
+        edgeElasticity: () => 100,
+        nestingFactor: 5,
+        gravity: 80,
+        numIter: 1000,
+        initialTemp: 200,
+        coolingFactor: 0.95,
+        minTemp: 1.0,
       },
     });
 
@@ -167,6 +176,7 @@ export default function CytoscapeGraph({ data, onNodeClick, onSeed }) {
       if (cyRef.current) {
         cyRef.current.resize();
         cyRef.current.fit();
+        cyRef.current.center();
       }
     }, 150);
 
@@ -176,28 +186,18 @@ export default function CytoscapeGraph({ data, onNodeClick, onSeed }) {
   }, [data, hasNodes, onNodeClick]);
 
   return (
-    <div className="relative w-full h-[580px] bg-slate-950/90 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
+    <div className="relative w-full h-[580px] bg-[#111827] border border-slate-800 rounded-xl overflow-hidden shadow-sm bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px]">
       {hasNodes ? (
         <div ref={containerRef} className="w-full h-full" />
       ) : (
-        <div className="relative w-full h-full flex flex-col items-center justify-center p-8 text-center space-y-5 bg-gradient-to-b from-slate-950 via-slate-900/90 to-slate-950">
-          {/* Glowing Hexagonal Network Icon Container */}
-          <div className="relative w-16 h-16 flex items-center justify-center">
-            <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full text-cyan-500 drop-shadow-[0_0_12px_rgba(6,182,212,0.6)] animate-rotate-hexagon">
-              <polygon
-                points="50,4 93,26 93,74 50,96 7,74 7,26"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="4"
-                className="text-cyan-400"
-              />
-            </svg>
-            <Network className="w-7 h-7 text-cyan-300 drop-shadow-[0_0_8px_#06b6d4]" />
+        <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center space-y-4 bg-[#111827]">
+          <div className="w-12 h-12 rounded-xl bg-blue-950/40 border border-blue-800/50 flex items-center justify-center text-blue-400">
+            <Network className="w-6 h-6" />
           </div>
 
-          <div className="max-w-md space-y-2 z-10">
-            <h3 className="text-lg font-black text-white tracking-tight">Neo4j Link Graph Workspace</h3>
-            <p className="text-xs text-slate-400 leading-relaxed font-sans">
+          <div className="max-w-md space-y-1.5">
+            <h3 className="text-base font-bold text-white tracking-tight">Neo4j Link Graph Workspace</h3>
+            <p className="text-xs text-slate-400 leading-relaxed">
               No multi-entity nodes or relationships are currently loaded. Populate synthetic intelligence to visualize live threat actors, crypto wallets, and ingested channel messages.
             </p>
           </div>
@@ -205,10 +205,10 @@ export default function CytoscapeGraph({ data, onNodeClick, onSeed }) {
           {onSeed && (
             <button
               onClick={onSeed}
-              className="stein-btn-cyan text-xs px-6 py-3 shadow-[0_0_25px_rgba(6,182,212,0.5)] z-10"
+              className="stein-btn-primary text-xs px-5 py-2.5"
             >
-              <Network className="w-4 h-4 text-cyan-300" />
-              <span>INITIALIZE GRAPH INTELLIGENCE</span>
+              <Network className="w-4 h-4" />
+              <span>Initialize Graph Intelligence</span>
             </button>
           )}
         </div>

@@ -2,18 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── STEIN Cyber-Intelligence Base Styles ────────────────────────── */
+/* ── Professional Enterprise SaaS Base Styles ───────────────────── */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #334155 #070a14;
+  scrollbar-color: #334155 #0b0f19;
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #070a14;
+  background: #0b0f19;
 }
 ::-webkit-scrollbar-thumb {
   background: #334155;
@@ -24,157 +24,67 @@
 }
 
 ::selection {
-  background: rgba(59, 130, 246, 0.4);
+  background: rgba(59, 130, 246, 0.3);
   color: #ffffff;
 }
 
 body {
-  background-color: #070a14;
+  background-color: #0b0f19;
   color: #f1f5f9;
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.05) 0px, transparent 50%);
-  background-attachment: fixed;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* ── Cyber UI Component Library ───────────────────────────── */
+/* ── Enterprise UI Component Library ─────────────────────────── */
 @layer components {
   .stein-card {
-    @apply bg-slate-900/80 backdrop-blur-md border border-slate-800/80 rounded-xl p-5 shadow-2xl transition-all duration-300;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    @apply bg-[#111827] border border-slate-800 rounded-xl p-5 shadow-sm transition-colors duration-150;
   }
   .stein-card-hover {
-    @apply stein-card hover:border-cyan-500/50 hover:-translate-y-1 hover:shadow-2xl cursor-pointer;
-  }
-  .stein-card-hover:hover {
-    box-shadow: 0 12px 35px -5px rgba(6, 182, 212, 0.25), 0 0 20px -5px rgba(59, 130, 246, 0.2);
+    @apply stein-card hover:border-slate-700 hover:bg-[#161f33] cursor-pointer;
   }
 
   .stein-badge {
-    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold tracking-wide border transition-all duration-200 hover:scale-105;
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-medium font-sans border transition-colors;
   }
   .stein-badge-live {
-    @apply stein-badge bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:border-emerald-400/60;
-    box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
-  }
-  .stein-badge-live:hover {
-    box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);
+    @apply stein-badge bg-emerald-950/40 text-emerald-400 border-emerald-800/50;
   }
   .stein-badge-demo {
-    @apply stein-badge bg-amber-500/10 text-amber-400 border-amber-500/30 hover:border-amber-400/60;
+    @apply stein-badge bg-slate-800 text-slate-300 border-slate-700;
   }
   .stein-badge-suspicious {
-    @apply stein-badge bg-red-500/15 text-red-400 border-red-500/40 hover:border-red-400/70;
-    box-shadow: 0 0 12px rgba(239, 68, 68, 0.25);
-  }
-  .stein-badge-suspicious:hover {
-    box-shadow: 0 0 18px rgba(239, 68, 68, 0.45);
+    @apply stein-badge bg-red-950/40 text-red-400 border-red-800/50;
   }
   .stein-badge-review {
-    @apply stein-badge bg-amber-500/15 text-amber-300 border-amber-500/40 hover:border-amber-400/60;
+    @apply stein-badge bg-amber-950/40 text-amber-400 border-amber-800/50;
   }
   .stein-badge-benign {
-    @apply stein-badge bg-slate-800 text-slate-400 border-slate-700 hover:border-slate-600;
+    @apply stein-badge bg-slate-800 text-slate-400 border-slate-700;
   }
   .stein-badge-cyan {
-    @apply stein-badge bg-cyan-500/10 text-cyan-400 border-cyan-500/30 hover:border-cyan-400/60;
-    box-shadow: 0 0 10px rgba(6, 182, 212, 0.2);
-  }
-  .stein-badge-cyan:hover {
-    box-shadow: 0 0 16px rgba(6, 182, 212, 0.4);
+    @apply stein-badge bg-blue-950/40 text-blue-400 border-blue-800/50;
   }
   .stein-badge-purple {
-    @apply stein-badge bg-purple-500/10 text-purple-400 border-purple-500/30 hover:border-purple-400/60;
+    @apply stein-badge bg-purple-950/40 text-purple-400 border-purple-800/50;
   }
 
   .stein-btn {
-    @apply relative overflow-hidden inline-flex items-center justify-center gap-2.5 px-5 py-2.5 rounded-xl font-mono text-xs font-bold tracking-wider uppercase transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none cursor-pointer;
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold text-xs transition-colors duration-150 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none cursor-pointer;
   }
   .stein-btn-primary {
-    @apply stein-btn bg-slate-900/90 text-blue-300 hover:text-white border border-blue-500/60 hover:border-blue-400;
-    box-shadow: 0 0 20px -3px rgba(59, 130, 246, 0.35);
-  }
-  .stein-btn-primary:hover {
-    box-shadow: 0 0 30px 2px rgba(59, 130, 246, 0.65);
+    @apply stein-btn bg-blue-600 hover:bg-blue-700 text-white shadow-sm;
   }
   .stein-btn-cyan {
-    @apply stein-btn bg-slate-900/90 text-cyan-300 hover:text-white border border-cyan-500/60 hover:border-cyan-400;
-    box-shadow: 0 0 20px -3px rgba(6, 182, 212, 0.35);
-  }
-  .stein-btn-cyan:hover {
-    box-shadow: 0 0 30px 2px rgba(6, 182, 212, 0.65);
+    @apply stein-btn bg-blue-600 hover:bg-blue-700 text-white shadow-sm;
   }
   .stein-btn-secondary {
-    @apply stein-btn bg-slate-900/90 text-slate-300 hover:text-white border border-slate-700/80 hover:border-slate-500 hover:bg-slate-800;
+    @apply stein-btn bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700;
   }
   .stein-btn-danger {
-    @apply stein-btn bg-slate-900/90 text-red-400 hover:text-white border border-red-500/60 hover:border-red-400;
-    box-shadow: 0 0 20px -3px rgba(239, 68, 68, 0.35);
-  }
-  .stein-btn-danger:hover {
-    box-shadow: 0 0 30px 2px rgba(239, 68, 68, 0.65);
+    @apply stein-btn bg-red-900/40 hover:bg-red-900/60 text-red-300 border border-red-800/50;
   }
   .stein-btn-success {
-    @apply stein-btn bg-slate-900/90 text-emerald-400 hover:text-white border border-emerald-500/60 hover:border-emerald-400;
-    box-shadow: 0 0 20px -3px rgba(16, 185, 129, 0.35);
+    @apply stein-btn bg-emerald-900/40 hover:bg-emerald-900/60 text-emerald-300 border border-emerald-800/50;
   }
-  .stein-btn-success:hover {
-    box-shadow: 0 0 30px 2px rgba(16, 185, 129, 0.65);
-  }
-}
-
-/* ── Custom Cyber Animations ─────────────────────────────── */
-@keyframes rotateHexagon {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes waveMorph {
-  0% {
-    stroke-dashoffset: 0;
-    transform: translateY(0px) scaleY(1);
-  }
-  50% {
-    stroke-dashoffset: -90;
-    transform: translateY(-2px) scaleY(1.2);
-  }
-  100% {
-    stroke-dashoffset: -180;
-    transform: translateY(0px) scaleY(1);
-  }
-}
-
-@keyframes zapPulse {
-  0%, 100% {
-    transform: scale(1);
-    filter: drop-shadow(0 0 4px rgba(252, 211, 77, 0.8));
-  }
-  50% {
-    transform: scale(1.25) rotate(-10deg);
-    filter: drop-shadow(0 0 12px rgba(245, 158, 11, 1));
-  }
-}
-
-.animate-rotate-hexagon {
-  animation: rotateHexagon 18s linear infinite;
-  transform-origin: center;
-}
-
-.animate-wave-flow {
-  stroke-dasharray: 60 12;
-  animation: waveFlow 4s linear infinite;
-}
-
-.animate-wave-dynamic {
-  stroke-dasharray: 70 15;
-  animation: waveMorph 3s ease-in-out infinite;
-  transform-origin: center;
-}
-
-.animate-zap-pulse {
-  animation: zapPulse 1.8s ease-in-out infinite;
 }
