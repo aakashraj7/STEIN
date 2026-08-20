@@ -146,21 +146,26 @@ export default function CytoscapeGraph({ data, onNodeClick, onSeed }) {
         },
       ],
       layout: {
-        name: 'cose',
+        name: 'concentric',
         animate: true,
-        animationDuration: 500,
-        padding: 60,
-        nodeOverlap: 30,
-        componentSpacing: 80,
-        nodeRepulsion: () => 8000,
-        idealEdgeLength: () => 80,
-        edgeElasticity: () => 100,
-        nestingFactor: 5,
-        gravity: 80,
-        numIter: 1000,
-        initialTemp: 200,
-        coolingFactor: 0.95,
-        minTemp: 1.0,
+        animationDuration: 600,
+        fit: true,
+        padding: 70,
+        startAngle: (3 / 2) * Math.PI,
+        clockwise: true,
+        equidistant: false,
+        minNodeSpacing: 85,
+        nodeDimensionsIncludeLabels: true,
+        concentric: function (node) {
+          const type = node.data('type');
+          if (type === 'Vendor') return 4;
+          if (type === 'Case') return 3;
+          if (type === 'Wallet') return 2;
+          return 1;
+        },
+        levelWidth: function () {
+          return 1;
+        },
       },
     });
 
@@ -178,7 +183,7 @@ export default function CytoscapeGraph({ data, onNodeClick, onSeed }) {
         cyRef.current.fit();
         cyRef.current.center();
       }
-    }, 150);
+    }, 200);
 
     return () => {
       if (cyRef.current) cyRef.current.destroy();
@@ -214,31 +219,98 @@ export default function CytoscapeGraph({ data, onNodeClick, onSeed }) {
         </div>
       )}
 
+      {/* Graph Toolbar Overlay */}
+      {hasNodes && (
+        <div className="absolute top-4 left-4 bg-slate-900/90 backdrop-blur-md border border-slate-800 p-2 rounded-xl text-xs flex items-center gap-1.5 z-10">
+          <button
+            onClick={() => {
+              if (!cyRef.current) return;
+              cyRef.current.layout({
+                name: 'concentric',
+                animate: true,
+                animationDuration: 500,
+                fit: true,
+                padding: 60,
+                minNodeSpacing: 85,
+                concentric: (n) => (n.data('type') === 'Vendor' ? 4 : n.data('type') === 'Case' ? 3 : n.data('type') === 'Wallet' ? 2 : 1),
+              }).run();
+            }}
+            className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold border border-slate-700"
+          >
+            Structured Rings
+          </button>
+
+          <button
+            onClick={() => {
+              if (!cyRef.current) return;
+              cyRef.current.layout({
+                name: 'circle',
+                animate: true,
+                animationDuration: 500,
+                fit: true,
+                padding: 60,
+              }).run();
+            }}
+            className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold border border-slate-700"
+          >
+            Circle Layout
+          </button>
+
+          <button
+            onClick={() => {
+              if (!cyRef.current) return;
+              cyRef.current.layout({
+                name: 'grid',
+                animate: true,
+                animationDuration: 500,
+                fit: true,
+                padding: 60,
+              }).run();
+            }}
+            className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold border border-slate-700"
+          >
+            Grid Matrix
+          </button>
+
+          <button
+            onClick={() => {
+              if (cyRef.current) {
+                cyRef.current.fit();
+                cyRef.current.center();
+              }
+            }}
+            className="px-2.5 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-semibold"
+          >
+            Reset View
+          </button>
+        </div>
+      )}
+
       {/* Graph Legend Overlay */}
       {hasNodes && (
-        <div className="absolute top-4 right-4 bg-slate-900/90 backdrop-blur-md border border-slate-800 p-3.5 rounded-xl text-xs space-y-2 z-10 text-slate-300 shadow-xl">
+        <div className="absolute top-4 right-4 bg-slate-900/90 backdrop-blur-md border border-slate-800 p-3 rounded-xl text-xs space-y-2 z-10 text-slate-300">
           <div className="font-bold text-white text-[10px] uppercase tracking-wider border-b border-slate-800 pb-1">
             GRAPH LEGEND
           </div>
-          <div className="flex items-center gap-2 text-[11px] font-semibold">
-            <span className="w-3 h-3 rounded-full bg-red-500 shadow-[0_0_8px_#ef4444] inline-block" />
-            <span>Vendor Node</span>
+          <div className="flex items-center gap-2 text-[11px] font-medium">
+            <span className="w-2.5 h-2.5 rounded-full bg-red-500 border border-red-300 inline-block" />
+            <span>Vendor</span>
           </div>
-          <div className="flex items-center gap-2 text-[11px] font-semibold">
-            <span className="w-3 h-3 bg-amber-500 rotate-45 shadow-[0_0_8px_#f59e0b] inline-block" />
+          <div className="flex items-center gap-2 text-[11px] font-medium">
+            <span className="w-2.5 h-2.5 bg-amber-500 rotate-45 border border-amber-300 inline-block" />
             <span>Crypto Wallet</span>
           </div>
-          <div className="flex items-center gap-2 text-[11px] font-semibold">
-            <span className="w-3 h-3 rounded-sm bg-cyan-400 shadow-[0_0_8px_#22d3ee] inline-block" />
+          <div className="flex items-center gap-2 text-[11px] font-medium">
+            <span className="w-2.5 h-2.5 rounded-sm bg-blue-500 border border-blue-300 inline-block" />
             <span>Ingested Msg</span>
           </div>
-          <div className="flex items-center gap-2 text-[11px] font-semibold">
-            <span className="w-3 h-3 bg-emerald-500 shadow-[0_0_8px_#10b981] inline-block" />
+          <div className="flex items-center gap-2 text-[11px] font-medium">
+            <span className="w-2.5 h-2.5 bg-emerald-500 border border-emerald-300 inline-block" />
             <span>Case File</span>
           </div>
-          <div className="flex items-center gap-2 text-[11px] font-semibold">
-            <span className="w-3 h-3 rounded bg-purple-500 shadow-[0_0_8px_#8b5cf6] inline-block" />
-            <span>Channel Intel</span>
+          <div className="flex items-center gap-2 text-[11px] font-medium">
+            <span className="w-2.5 h-2.5 rounded bg-purple-500 border border-purple-300 inline-block" />
+            <span>Telegram Channel</span>
           </div>
         </div>
       )}
