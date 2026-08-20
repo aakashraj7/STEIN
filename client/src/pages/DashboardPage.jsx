@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../api/client';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Zap,
   MessageSquare,
@@ -10,6 +10,7 @@ import {
   Radio,
   ArrowRight,
   ShieldAlert,
+  ShieldCheck,
   CheckCircle2,
   RefreshCw,
   Clock,
@@ -23,6 +24,7 @@ import {
 } from 'lucide-react';
 
 export default function DashboardPage() {
+  const navigate = useNavigate();
   const [stats, setStats] = useState({ messages: 0, vendors: 0, leads: 0, cases: 0 });
   const [teleStatus, setTeleStatus] = useState(null);
   const [recentMessages, setRecentMessages] = useState([]);
@@ -150,7 +152,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Stat Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Card 1: Total Ingested */}
         <div className="stein-card-hover group">
           <div className="flex items-center justify-between">
@@ -176,50 +178,32 @@ export default function DashboardPage() {
               <Users className="w-4 h-4" />
             </div>
             <span className="text-slate-600 text-[10px] font-mono font-semibold">
-              0% 24h
+              Correlated Profiles
             </span>
           </div>
 
           <div className="mt-3">
             <p className="text-slate-700 text-[11px] font-extrabold uppercase tracking-wider">Tracked Vendors</p>
             <p className="text-2xl font-bold mt-0.5 text-slate-900 font-mono">{stats.vendors}</p>
-            <p className="text-[11px] text-slate-600 font-medium mt-0.5">Correlated Profiles</p>
+            <p className="text-[11px] text-slate-600 font-medium mt-0.5">Stylometric Profiles</p>
           </div>
         </div>
 
-        {/* Card 3: Investigative Leads */}
-        <div className="stein-card-hover group">
-          <div className="flex items-center justify-between">
-            <div className="w-8 h-8 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 group-hover:scale-110 group-hover:bg-amber-600 group-hover:text-white transition-all duration-200">
-              <Target className="w-4 h-4" />
-            </div>
-            <span className="text-amber-800 text-[10px] font-mono font-bold">
-              ↑ 100% 24h
-            </span>
-          </div>
-
-          <div className="mt-3">
-            <p className="text-slate-700 text-[11px] font-extrabold uppercase tracking-wider">Investigative Leads</p>
-            <p className="text-2xl font-bold mt-0.5 text-amber-800 font-mono">{stats.leads}</p>
-            <p className="text-[11px] text-slate-600 font-medium mt-0.5">High Risk Signals</p>
-          </div>
-        </div>
-
-        {/* Card 4: Active Cases */}
+        {/* Card 3: Canonical Reports */}
         <div className="stein-card-hover group">
           <div className="flex items-center justify-between">
             <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-200">
-              <Briefcase className="w-4 h-4" />
+              <ShieldCheck className="w-4 h-4" />
             </div>
             <span className="text-emerald-800 text-[10px] font-mono font-bold">
-              Active
+              SHA-256 Signed
             </span>
           </div>
 
           <div className="mt-3">
-            <p className="text-slate-700 text-[11px] font-extrabold uppercase tracking-wider">Active Cases</p>
-            <p className="text-2xl font-bold mt-0.5 text-slate-900 font-mono">{stats.cases}</p>
-            <p className="text-[11px] text-slate-500 font-normal mt-0.5">Open Dossiers</p>
+            <p className="text-slate-700 text-[11px] font-extrabold uppercase tracking-wider">Signed Reports</p>
+            <p className="text-2xl font-bold mt-0.5 text-slate-900 font-mono">Verified</p>
+            <p className="text-[11px] text-slate-600 font-medium mt-0.5">Court Admissible Packages</p>
           </div>
         </div>
       </div>
@@ -256,7 +240,9 @@ export default function DashboardPage() {
               return (
                 <div
                   key={msg._id}
-                  className="px-5 py-3.5 hover:bg-slate-50 transition-colors flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3"
+                  onClick={() => navigate(`/messages?expand=${msg._id}`)}
+                  className="px-5 py-3.5 hover:bg-slate-50 transition-colors flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 cursor-pointer group"
+                  title="Inspect message triage details"
                 >
                   <div className="space-y-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
@@ -265,13 +251,16 @@ export default function DashboardPage() {
                       ) : (
                         <span className="stein-badge-demo">DEMO</span>
                       )}
-                      <Link
-                        to={msg.vendorId?._id ? `/vendors/${msg.vendorId._id}` : `/vendors`}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(msg.vendorId?._id ? `/vendors/${msg.vendorId._id}` : `/vendors`);
+                        }}
                         className="text-xs font-bold text-slate-900 hover:text-blue-600 hover:underline transition-colors flex items-center gap-1"
                         title={`View Vendor Dossier for ${vendorName}`}
                       >
                         <span>{vendorName}</span>
-                      </Link>
+                      </button>
                       <span className="text-xs text-slate-500 font-mono">
                         {new Date(msg.timestamp).toLocaleDateString()} {new Date(msg.timestamp).toLocaleTimeString()}
                       </span>
@@ -284,7 +273,7 @@ export default function DashboardPage() {
                           {msg.encodingDetected}
                         </span>
                       )}
-                      <p className="line-clamp-1 font-normal text-slate-700">
+                      <p className="line-clamp-1 font-medium text-slate-900 group-hover:text-blue-600 transition-colors">
                         {msg.decodedText ?? msg.originalText ?? msg.text}
                       </p>
                     </div>

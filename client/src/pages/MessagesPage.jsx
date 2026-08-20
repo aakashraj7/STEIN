@@ -35,6 +35,7 @@ export default function MessagesPage() {
   const [authorSignature, setAuthorSignature] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [expandedId, setExpandedId] = useState(null);
+  const expandMsgId = searchParams.get('expand') || searchParams.get('msgId') || null;
 
   const fetchMessages = () => {
     setLoading(true);
@@ -52,6 +53,12 @@ export default function MessagesPage() {
   useEffect(() => {
     fetchMessages();
   }, [filter]);
+
+  useEffect(() => {
+    if (expandMsgId) {
+      setExpandedId(expandMsgId);
+    }
+  }, [expandMsgId, messages]);
 
   const handleManualIngest = (e) => {
     e.preventDefault();
