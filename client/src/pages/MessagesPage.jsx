@@ -378,6 +378,12 @@ export default function MessagesPage() {
                               +40 Explicit Substance / Narcotics
                             </span>
                           )}
+                          {signals.includes('regional_punjabi_hindi_slang') && (
+                            <span className="px-2.5 py-1 rounded-md bg-orange-100 text-orange-950 border border-orange-300 font-mono text-[11px] font-bold flex items-center gap-1.5 shadow-2xs">
+                              <span className="w-2 h-2 rounded-full bg-orange-600 animate-pulse" />
+                              +35 Regional Punjabi / Hindi Drug Slang
+                            </span>
+                          )}
                           {(signals.includes('coded_product_reference') || signals.includes('slang_terminology')) && (
                             <span className="px-2.5 py-1 rounded-md bg-amber-100 text-amber-900 border border-amber-300 font-mono text-[11px] font-bold flex items-center gap-1.5 shadow-2xs">
                               <span className="w-2 h-2 rounded-full bg-amber-600" />

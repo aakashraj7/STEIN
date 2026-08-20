@@ -10,6 +10,7 @@
 
 const SIGNAL_WEIGHTS = {
   explicit_illicit_substance_reference: 40,
+  regional_punjabi_hindi_slang: 35,
   coded_product_reference: 18,
   quantity_reference: 8,
   pricing_discussion: 12,
@@ -35,6 +36,36 @@ const PATTERNS = {
     /\b(weed|hash|cocaine|coke|heroin|opium|afeem|ganja|charas|chitta)\b/i,
     /\b(mdma|ecstasy|mephedrone|meth|ice|lsd|acid|ketamine|shrooms)\b/i,
     /brown\s*sugar/i,
+  ],
+
+  /*
+   * Regional Punjabi / Hindi Drug Slang & Obfuscated Terminology.
+   */
+  regional_punjabi_hindi_slang: [
+    /\b(chitta|afeem|bhang|ganja|charas|maal|samaan|dawa|nasha|dodda|toda|goliyan|khap)\b/i,
+    /\b(chitta\s+available|maal\s+aa\s*gaya|maal\s+heavy|fresh\s+samaan|purana\s+rate|jisko\s+chahiye)\b/i,
+    // Gurmukhi (Punjabi)
+    /ਚਿੱਟਾ/,
+    /ਅਫੀਮ/,
+    /ਭੰਗ/,
+    /ਗਾਂਜਾ/,
+    /ਚਰਸ/,
+    /ਮਾਲ/,
+    /ਸਾਮਾਨ/,
+    /ਨਸ਼ਾ/,
+    /ਡੋਡੇ/,
+    // Devanagari (Hindi)
+    /चिट्टा/,
+    /अफीम/,
+    /भांग/,
+    /गांजा/,
+    /चरस/,
+    /माल/,
+    /सामान/,
+    /दवा/,
+    /नशा/,
+    /डोडे/,
+    /गोलियां/,
   ],
 
   /*
