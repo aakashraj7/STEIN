@@ -13,7 +13,10 @@ import {
   AtSign,
 } from 'lucide-react';
 
+import { useLanguage } from '../i18n/LanguageContext';
+
 export default function VendorsPage() {
+  const { t } = useLanguage();
   const [vendors, setVendors] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,15 +33,15 @@ export default function VendorsPage() {
         <div>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
             <Users className="w-6 h-6 text-blue-600" />
-            <span>Tracked Vendor Identities</span>
+            <span>{t('vendorTitle')}</span>
           </h1>
           <p className="text-slate-500 text-xs mt-1 font-medium">
-            Aggregated seller profiles, alias clusters, and stylometric fingerprints
+            {t('vendorSubtitle')}
           </p>
         </div>
         <Link to="/stylometry" className="stein-btn-primary text-xs">
           <Feather className="w-4 h-4" />
-          <span>Stylometry Comparison</span>
+          <span>{t('styloCompBtn')}</span>
         </Link>
       </div>
 
@@ -46,11 +49,11 @@ export default function VendorsPage() {
         {loading ? (
           <div className="col-span-full text-center text-slate-500 text-xs py-12 flex justify-center items-center gap-2">
             <RefreshCw className="w-4 h-4 animate-spin text-blue-600" />
-            <span>Fetching vendor intelligence directory...</span>
+            <span>...</span>
           </div>
         ) : vendors.length === 0 ? (
           <div className="col-span-full text-center text-slate-500 text-xs py-12 font-medium">
-            No vendor profiles found. Please seed data first on the Dashboard.
+            No vendor profiles found.
           </div>
         ) : (
           vendors.map((vendor) => (
@@ -77,14 +80,14 @@ export default function VendorsPage() {
                     vendor.riskLevel === 'MEDIUM' ? 'stein-badge-review' :
                     'stein-badge-benign'
                   }`}>
-                    {vendor.riskLevel} RISK
+                    {vendor.riskLevel === 'HIGH' ? t('highRisk') : vendor.riskLevel === 'MEDIUM' ? t('mediumRisk') : t('lowRisk')}
                   </span>
                 </div>
 
                 {/* Aliases & Stats */}
                 <div className="space-y-2 pt-2 border-t border-slate-200 text-xs">
                   <div>
-                    <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Known Aliases:</span>
+                    <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block">{t('knownAliasesHeader')}</span>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {vendor.aliases && vendor.aliases.length > 0 ? (
                         vendor.aliases.map((alias, idx) => (
@@ -93,7 +96,7 @@ export default function VendorsPage() {
                           </span>
                         ))
                       ) : (
-                        <span className="text-slate-400 text-[11px] italic">None recorded</span>
+                        <span className="text-slate-400 text-[11px] italic">{t('noneRecorded')}</span>
                       )}
                     </div>
                   </div>
@@ -106,7 +109,7 @@ export default function VendorsPage() {
                     >
                       <MessageSquare className="w-3.5 h-3.5 text-blue-600 group-hover/msg:scale-110 transition-transform" />
                       <div>
-                        <div className="text-slate-500 text-[9px] uppercase font-bold group-hover/msg:text-blue-700">Messages</div>
+                        <div className="text-slate-500 text-[9px] uppercase font-bold group-hover/msg:text-blue-700">{t('messagesCount')}</div>
                         <div className="font-bold text-slate-900 font-mono group-hover/msg:text-blue-700">{vendor.messageCount || 0}</div>
                       </div>
                     </Link>
@@ -114,7 +117,7 @@ export default function VendorsPage() {
                     <div className="bg-slate-50 p-2 rounded border border-slate-200 flex items-center gap-2">
                       <Wallet className="w-3.5 h-3.5 text-emerald-600" />
                       <div>
-                        <div className="text-slate-500 text-[9px] uppercase font-bold">Wallets</div>
+                        <div className="text-slate-500 text-[9px] uppercase font-bold">{t('walletsCount')}</div>
                         <div className="font-bold text-emerald-600 font-mono">{(vendor.walletAddresses || []).length}</div>
                       </div>
                     </div>
@@ -124,13 +127,13 @@ export default function VendorsPage() {
 
               <div className="pt-3 border-t border-slate-200 flex justify-between items-center text-xs">
                 <span className="text-[10px] text-slate-500 font-mono">
-                  First Seen: {new Date(vendor.firstSeen).toLocaleDateString()}
+                  {t('firstSeen')}: {new Date(vendor.firstSeen).toLocaleDateString()}
                 </span>
                 <Link
                   to={`/vendors/${vendor._id}`}
                   className="text-xs text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1 group-hover:translate-x-0.5 transition-transform"
                 >
-                  <span>Full Dossier</span>
+                  <span>{t('fullDossier')}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>

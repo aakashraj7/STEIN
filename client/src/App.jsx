@@ -47,7 +47,31 @@ const NAV_GROUPS = [
   },
 ];
 
+import { useLanguage } from './i18n/LanguageContext';
+
 function Sidebar() {
+  const { t } = useLanguage();
+
+  const navGroups = [
+    {
+      title: t('navCore'),
+      items: [
+        { to: '/', label: t('navDashboard'), icon: LayoutDashboard },
+        { to: '/messages', label: t('navMessages'), icon: MessageSquareText },
+        { to: '/vendors', label: t('navVendors'), icon: Users },
+      ],
+    },
+    {
+      title: t('navCorrelation'),
+      items: [
+        { to: '/analysis', label: t('navAnalysis'), icon: Activity },
+        { to: '/graph', label: t('navGraph'), icon: Network },
+        { to: '/stylometry', label: t('navStylometry'), icon: Feather },
+        { to: '/wallets', label: t('navWallets'), icon: WalletCards },
+      ],
+    },
+  ];
+
   return (
     <aside className="w-64 bg-white border-r border-slate-200 flex flex-col h-screen fixed left-0 top-0 z-30 shadow-sm">
       {/* Brand Header */}
@@ -76,7 +100,7 @@ function Sidebar() {
 
       {/* Navigation Links */}
       <nav className="flex-1 py-5 px-3 overflow-y-auto space-y-6">
-        {NAV_GROUPS.map((group) => (
+        {navGroups.map((group) => (
           <div key={group.title} className="space-y-1">
             <div className="px-3 text-[10px] font-extrabold tracking-wider text-slate-500 uppercase">
               {group.title}
@@ -113,15 +137,16 @@ function Sidebar() {
       <div className="p-4 border-t border-slate-200 bg-slate-50 text-[10px] text-slate-500 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Terminal className="w-3.5 h-3.5 text-blue-600" />
-          <span>Engine Active</span>
+          <span>{t('engineActive')}</span>
         </div>
-        <span className="font-mono text-slate-500">STEIN Platform</span>
+        <span className="font-mono text-slate-500">{t('steinPlatform')}</span>
       </div>
     </aside>
   );
 }
 
 function TopBar() {
+  const { lang, changeLanguage, t } = useLanguage();
   const [health, setHealth] = useState(null);
 
   useEffect(() => {
@@ -136,27 +161,48 @@ function TopBar() {
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 tracking-wider">
           <Activity className="w-3.5 h-3.5 text-blue-600" />
-          <span>AI-ASSISTED DRUG-MARKET INVESTIGATION SYSTEM</span>
+          <span>{t('topbarTitle')}</span>
         </div>
       </div>
 
       <div className="flex items-center gap-3">
-        {health?.status?.telegram === 'LIVE' ? (
-          <span className="stein-badge-live">
-            <Radio className="w-3 h-3 text-emerald-600" />
-            LIVE TELEGRAM
-          </span>
-        ) : (
-          <span className="stein-badge-demo">
-            DEMO MODE
-          </span>
-        )}
+        {/* Language Toggler Control (English / Hindi / Punjabi) */}
+        <div className="flex items-center p-0.5 bg-slate-100 border border-slate-200 rounded-lg text-xs font-semibold">
+          {[
+            { id: 'en', label: '🇬🇧 EN' },
+            { id: 'hi', label: '🇮🇳 हिंदी' },
+            { id: 'pa', label: '🌾 ਪੰਜਾਬੀ' },
+          ].map((item) => (
+            <button
+              key={item.id}
+              onClick={() => changeLanguage(item.id)}
+              className={`px-2.5 py-1 rounded-md transition-all ${
+                lang === item.id
+                  ? 'bg-blue-600 text-white font-bold shadow-2xs'
+                  : 'text-slate-600 hover:text-blue-600 hover:bg-white'
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
 
         <div className="h-3.5 w-[1px] bg-slate-200" />
 
+        {health?.status?.telegram === 'LIVE' ? (
+          <span className="stein-badge-live">
+            <Radio className="w-3 h-3 text-emerald-600" />
+            {t('liveTelegram')}
+          </span>
+        ) : (
+          <span className="stein-badge-demo">
+            {t('demoMode')}
+          </span>
+        )}
+
         <div className="flex items-center gap-2 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-md text-xs text-slate-700 font-mono">
           <span className={`w-1.5 h-1.5 rounded-full ${health?.ready ? 'bg-emerald-500' : 'bg-amber-500'}`} />
-          <span>{health?.ready ? 'Operational' : 'Initializing...'}</span>
+          <span>{health?.ready ? t('operational') : t('initializing')}</span>
         </div>
       </div>
     </header>

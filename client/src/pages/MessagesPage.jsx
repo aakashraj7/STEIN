@@ -24,7 +24,10 @@ import {
   Code2,
 } from 'lucide-react';
 
+import { useLanguage } from '../i18n/LanguageContext';
+
 export default function MessagesPage() {
+  const { t } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedVendorFilter = searchParams.get('vendor') || '';
 
@@ -104,10 +107,10 @@ export default function MessagesPage() {
         <div>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
             <MessageSquareText className="w-6 h-6 text-blue-600" />
-            <span>Ingested Messages Triage</span>
+            <span>{t('msgTitle')}</span>
           </h1>
           <p className="text-slate-500 text-xs mt-1 font-medium">
-            Real-time rule engine &amp; zero-shot classifier triage queue
+            {t('msgSubtitle')}
           </p>
         </div>
 
@@ -132,10 +135,10 @@ export default function MessagesPage() {
               onChange={(e) => setFilter(e.target.value)}
               className="bg-slate-50 border border-slate-300 text-slate-800 text-xs font-semibold rounded-lg pl-9 pr-8 py-2 focus:outline-none focus:border-blue-600 cursor-pointer"
             >
-              <option value="">All Classifications</option>
-              <option value="SUSPICIOUS">Suspicious Only</option>
-              <option value="NEEDS_REVIEW">Needs Review</option>
-              <option value="BENIGN">Benign</option>
+              <option value="">{t('allClassifications')}</option>
+              <option value="SUSPICIOUS">{t('suspiciousOnly')}</option>
+              <option value="NEEDS_REVIEW">{t('needsReview')}</option>
+              <option value="BENIGN">{t('benignOnly')}</option>
             </select>
           </div>
         </div>
@@ -146,7 +149,7 @@ export default function MessagesPage() {
         <div className="flex items-center gap-2 border-b border-slate-200 pb-2.5">
           <Terminal className="w-4 h-4 text-blue-600" />
           <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-            Ingest Synthetic Test Message
+            {t('ingestFormTitle')}
           </h2>
         </div>
         <form onSubmit={handleManualIngest} className="flex flex-col md:flex-row gap-2">
@@ -154,7 +157,7 @@ export default function MessagesPage() {
             <User className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Sender (e.g. 'Vendor_Alpha')"
+              placeholder={t('senderPlaceholder')}
               value={authorSignature}
               onChange={(e) => setAuthorSignature(e.target.value)}
               className="w-full bg-slate-50 border border-slate-300 rounded-lg pl-8 pr-3 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-600 font-mono font-medium"
@@ -163,7 +166,7 @@ export default function MessagesPage() {
           <div className="relative flex-1">
             <input
               type="text"
-              placeholder="Enter raw message text..."
+              placeholder={t('msgPlaceholder')}
               value={manualText}
               onChange={(e) => setManualText(e.target.value)}
               className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-600 font-medium"
@@ -175,7 +178,7 @@ export default function MessagesPage() {
             ) : (
               <Send className="w-3.5 h-3.5" />
             )}
-            <span>{submitting ? 'Classifying...' : 'Ingest & Classify'}</span>
+            <span>{submitting ? '...' : t('ingestBtn')}</span>
           </button>
         </form>
       </div>
@@ -186,26 +189,26 @@ export default function MessagesPage() {
         <div className="grid grid-cols-12 gap-3 px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-lg text-[10px] font-sans font-bold uppercase tracking-wider text-slate-600">
           <div className="col-span-1 flex items-center gap-1.5">
             <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
-            <span>SOURCE</span>
+            <span>{t('thSource')}</span>
           </div>
           <div className="col-span-2 flex items-center gap-1.5">
             <User className="w-3.5 h-3.5 text-blue-600" />
-            <span>VENDOR IDENTITY</span>
+            <span>{t('thVendor')}</span>
           </div>
           <div className="col-span-4 flex items-center gap-1.5">
             <MessageSquare className="w-3.5 h-3.5 text-blue-600" />
-            <span>MESSAGE CONTENT</span>
+            <span>{t('thMessageContent')}</span>
           </div>
           <div className="col-span-2 flex items-center gap-1.5">
             <ShieldAlert className="w-3.5 h-3.5 text-blue-600" />
-            <span>CLASSIFICATION &amp; RISK</span>
+            <span>{t('thRisk')}</span>
           </div>
           <div className="col-span-2 flex items-center gap-1.5">
             <Clock className="w-3.5 h-3.5 text-blue-600" />
-            <span>TIMESTAMP</span>
+            <span>{t('thTimestamp')}</span>
           </div>
           <div className="col-span-1 text-right">
-            <span>ACTION</span>
+            <span>{t('thAction')}</span>
           </div>
         </div>
 
@@ -318,7 +321,7 @@ export default function MessagesPage() {
                         }}
                         className="p-1.5 rounded-lg bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 transition-colors flex items-center gap-1 text-[11px] font-semibold"
                       >
-                        <span>{isExpanded ? 'Hide' : 'Details'}</span>
+                        <span>{isExpanded ? t('btnHide') : t('btnDetails')}</span>
                         {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                       </button>
                     </div>

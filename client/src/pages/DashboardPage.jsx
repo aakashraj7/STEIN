@@ -22,9 +22,11 @@ import {
   Search,
   Play,
 } from 'lucide-react';
+import { useLanguage } from '../i18n/LanguageContext';
 
 export default function DashboardPage() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [stats, setStats] = useState({ messages: 0, vendors: 0, leads: 0, cases: 0 });
   const [teleStatus, setTeleStatus] = useState(null);
   const [recentMessages, setRecentMessages] = useState([]);
@@ -40,18 +42,17 @@ export default function DashboardPage() {
         api.getVendors(),
         api.getLeads(),
         api.getCases(),
-        api.telegramStatus(),
+        api.getTelegramStatus(),
       ]);
 
+      setRecentMessages(msgs.data || []);
       setStats({
-        messages: msgs.total || msgs.data?.length || 0,
+        messages: msgs.data?.length || 0,
         vendors: vends.data?.length || 0,
         leads: leads.data?.length || 0,
         cases: cs.data?.length || 0,
       });
-
-      setRecentMessages(msgs.data || []);
-      setTeleStatus(tele.data);
+      setTeleStatus(tele.data || null);
     } catch (err) {
       console.error(err);
     } finally {
@@ -83,14 +84,14 @@ export default function DashboardPage() {
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
             <h1 className="text-xl font-bold tracking-tight text-slate-900">
-              Investigation Dashboard
+              {t('dashTitle')}
             </h1>
             <span className="stein-badge-cyan">
               LIVE INTEL
             </span>
           </div>
           <p className="text-slate-500 text-xs font-medium">
-            Telegram Drug-Market Intelligence &amp; Correlation System
+            {t('dashSubtitle')}
           </p>
         </div>
 
@@ -105,7 +106,7 @@ export default function DashboardPage() {
             ) : (
               <Play className="w-3.5 h-3.5" />
             )}
-            <span>{seeding ? 'Seeding...' : 'Seed Demo Scenario'}</span>
+            <span>{seeding ? '...' : t('seedBtn')}</span>
           </button>
         </div>
       </div>
