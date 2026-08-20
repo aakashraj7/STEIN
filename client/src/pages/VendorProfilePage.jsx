@@ -29,8 +29,8 @@ export default function VendorProfilePage() {
 
   if (loading) {
     return (
-      <div className="p-12 text-center text-slate-400 text-xs flex justify-center items-center gap-2">
-        <RefreshCw className="w-4 h-4 animate-spin text-cyan-400" />
+      <div className="p-12 text-center text-slate-500 text-xs flex justify-center items-center gap-2">
+        <RefreshCw className="w-4 h-4 animate-spin text-blue-600" />
         <span>Loading vendor dossier...</span>
       </div>
     );
@@ -38,7 +38,7 @@ export default function VendorProfilePage() {
 
   if (!data || !data.vendor) {
     return (
-      <div className="p-12 text-center text-slate-400 text-xs space-y-4">
+      <div className="p-12 text-center text-slate-500 text-xs space-y-4">
         <p>Vendor profile not found in intelligence directory.</p>
         <Link to="/vendors" className="stein-btn-secondary text-xs inline-flex items-center gap-1.5">
           <ArrowLeft className="w-3.5 h-3.5" />
@@ -51,24 +51,22 @@ export default function VendorProfilePage() {
   const { vendor, messages } = data;
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-7xl mx-auto animate-fade-in-up">
       {/* Back Link & Header */}
-      <div className="space-y-3">
-        <Link to="/vendors" className="text-xs text-slate-400 hover:text-slate-200 inline-flex items-center gap-1.5 transition-colors font-semibold">
+      <div className="space-y-3 border-b border-slate-200 pb-4">
+        <Link to="/vendors" className="text-xs text-slate-500 hover:text-slate-900 inline-flex items-center gap-1.5 transition-colors font-semibold">
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Vendor Directory</span>
         </Link>
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-500 p-[1px] shadow-cyber-blue">
-              <div className="w-full h-full bg-slate-950 rounded-[15px] flex items-center justify-center text-cyan-300 font-bold text-lg">
-                {vendor.name ? vendor.name[0].toUpperCase() : 'V'}
-              </div>
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 font-bold text-lg">
+              {vendor.name ? vendor.name[0].toUpperCase() : 'V'}
             </div>
             <div>
               <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-black text-white">{vendor.name}</h1>
+                <h1 className="text-2xl font-black text-slate-900">{vendor.name}</h1>
                 <span className={`stein-badge ${
                   vendor.riskLevel === 'HIGH' ? 'stein-badge-suspicious' :
                   vendor.riskLevel === 'MEDIUM' ? 'stein-badge-review' :
@@ -78,13 +76,13 @@ export default function VendorProfilePage() {
                   {vendor.riskLevel} RISK
                 </span>
               </div>
-              <p className="text-slate-400 text-xs mt-0.5 font-mono">
+              <p className="text-slate-500 text-xs mt-0.5 font-mono">
                 Target Dossier &amp; Stylometric Analysis Profile
               </p>
             </div>
           </div>
 
-          <Link to="/stylometry" className="stein-btn-cyan text-xs">
+          <Link to="/stylometry" className="stein-btn-primary text-xs">
             <Feather className="w-4 h-4" />
             <span>Compare Stylometry</span>
           </Link>
@@ -93,74 +91,81 @@ export default function VendorProfilePage() {
 
       {/* Metadata Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="stein-card border-slate-800 space-y-1">
+        <div className="stein-card border-slate-200 space-y-1">
           <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Known Aliases</span>
           <div className="flex flex-wrap gap-1 pt-1">
             {vendor.aliases && vendor.aliases.length > 0 ? (
               vendor.aliases.map((alias, idx) => (
-                <span key={idx} className="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-slate-200 font-mono text-xs font-semibold">
+                <span key={idx} className="px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-700 font-mono text-[10px] font-medium">
                   {alias}
                 </span>
               ))
             ) : (
-              <p className="text-xs font-semibold text-slate-400">None recorded</p>
+              <span className="text-slate-400 text-xs italic">No aliases recorded</span>
             )}
           </div>
         </div>
 
-        <div className="stein-card border-slate-800 space-y-1">
-          <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Telegram Identifier</span>
-          <p className="text-base font-bold text-cyan-400 font-mono flex items-center gap-1">
-            <AtSign className="w-4 h-4" />
-            <span>{vendor.telegramUsername || 'N/A'}</span>
+        <div className="stein-card border-slate-200 space-y-1">
+          <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Telegram Handle</span>
+          <p className="text-sm font-bold text-blue-600 font-mono flex items-center gap-1 mt-1">
+            <AtSign className="w-4 h-4 text-blue-600" />
+            <span>{vendor.telegramUsername || 'Unlinked'}</span>
           </p>
         </div>
 
-        <div className="stein-card border-slate-800 space-y-1">
-          <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Linked Crypto Wallets</span>
-          <div className="flex items-center gap-1.5 pt-1">
-            <Wallet className="w-4 h-4 text-emerald-400 shrink-0" />
-            <p className="text-xs font-mono font-semibold text-emerald-400 truncate">
-              {(vendor.walletAddresses || []).length > 0
-                ? vendor.walletAddresses.map(w => w.substring(0, 12) + '...').join(', ')
-                : 'None Linked'}
-            </p>
+        <div className="stein-card border-slate-200 space-y-1">
+          <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Linked Wallets</span>
+          <div className="flex flex-wrap gap-1 pt-1">
+            {vendor.walletAddresses && vendor.walletAddresses.length > 0 ? (
+              vendor.walletAddresses.map((addr, idx) => (
+                <span key={idx} className="px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-700 font-mono text-[10px] font-medium">
+                  {addr.substring(0, 8)}...{addr.substring(36)}
+                </span>
+              ))
+            ) : (
+              <span className="text-slate-400 text-xs italic">No wallets linked</span>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Associated Messages */}
-      <div className="stein-card border-slate-800 space-y-4">
-        <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
-          <MessageSquare className="w-4 h-4 text-cyan-400" />
-          <h2 className="text-base font-bold text-slate-100">
-            Correlated Messages ({messages.length})
+      {/* Vendor Ingested Messages List */}
+      <div className="stein-card border-slate-200 space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+          <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+            <MessageSquare className="w-4 h-4 text-blue-600" />
+            <span>Ingested Messages Corpora ({messages ? messages.length : 0})</span>
           </h2>
+          <span className="text-xs text-slate-500 font-mono">Stylometry Input Pool</span>
         </div>
 
-        {messages.length === 0 ? (
-          <div className="text-slate-500 text-xs py-6 text-center">No messages associated with this vendor yet.</div>
+        {!messages || messages.length === 0 ? (
+          <div className="py-8 text-center text-slate-400 text-xs">
+            No ingested messages linked to this vendor profile yet.
+          </div>
         ) : (
-          <div className="space-y-3">
-            {messages.map((m) => (
-              <div key={m._id} className="p-3.5 bg-slate-950/60 rounded-xl border border-slate-800/80 space-y-2">
-                <div className="flex justify-between items-center text-xs">
-                  <div className="flex items-center gap-1.5 text-slate-500 font-mono text-[10px]">
-                    <Clock className="w-3 h-3 text-cyan-400" />
-                    <span>{new Date(m.timestamp).toLocaleString()}</span>
+          <div className="divide-y divide-slate-100">
+            {messages.map((msg) => (
+              <div key={msg._id} className="py-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-slate-900 font-medium">{msg.text}</span>
                   </div>
-                  <span className="stein-badge-suspicious text-[10px]">
-                    {m.classification?.label} ({Math.round((m.classification?.confidence || 0) * 100)}%)
-                  </span>
+                  <div className="flex items-center gap-2 text-[10px] text-slate-500 font-mono">
+                    <Clock className="w-3 h-3 text-slate-400" />
+                    <span>{new Date(msg.timestamp).toLocaleString()}</span>
+                  </div>
                 </div>
-                <div className="flex items-start gap-2">
-                  {m.encodingDetected && (
-                    <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 shrink-0 flex items-center gap-1">
-                      <Code2 className="w-3 h-3 text-amber-400" />
-                      ENCODED: {m.encodingDetected}
-                    </span>
-                  )}
-                  <p className="text-xs text-slate-200 font-medium leading-relaxed">{m.decodedText ?? m.originalText ?? m.text}</p>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className={`stein-badge ${
+                    msg.classification?.label === 'SUSPICIOUS' ? 'stein-badge-suspicious' :
+                    msg.classification?.label === 'NEEDS_REVIEW' ? 'stein-badge-review' :
+                    'stein-badge-benign'
+                  }`}>
+                    {msg.classification?.label || 'UNCLASSIFIED'} ({msg.classification?.riskScore || 0})
+                  </span>
                 </div>
               </div>
             ))}
