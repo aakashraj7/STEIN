@@ -135,31 +135,31 @@ export default function MessagesPage() {
       </div>
 
       {/* Message List Card Grid Table */}
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         {/* Table Header Bar */}
-        <div className="grid grid-cols-12 gap-4 px-5 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
+        <div className="grid grid-cols-12 gap-4 px-4 py-2.5 bg-[#111827] border border-slate-800 rounded-lg text-[10px] font-sans font-semibold uppercase tracking-wider text-slate-400">
           <div className="col-span-1 flex items-center gap-1.5">
-            <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+            <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
             <span>PROVENANCE</span>
           </div>
           <div className="col-span-2 flex items-center gap-1.5">
-            <User className="w-3.5 h-3.5 text-cyan-400" />
+            <User className="w-3.5 h-3.5 text-blue-400" />
             <span>VENDOR IDENTITY</span>
           </div>
           <div className="col-span-4 flex items-center gap-1.5">
-            <MessageSquare className="w-3.5 h-3.5 text-cyan-400" />
+            <MessageSquare className="w-3.5 h-3.5 text-blue-400" />
             <span>MESSAGE CONTENT &amp; DECODING</span>
           </div>
           <div className="col-span-2 flex items-center gap-1.5">
-            <ShieldAlert className="w-3.5 h-3.5 text-cyan-400" />
+            <ShieldAlert className="w-3.5 h-3.5 text-blue-400" />
             <span>CLASSIFICATION &amp; RISK</span>
           </div>
           <div className="col-span-2 flex items-center gap-1.5">
-            <Activity className="w-3.5 h-3.5 text-cyan-400" />
+            <Activity className="w-3.5 h-3.5 text-blue-400" />
             <span>EXTRACTED SIGNALS</span>
           </div>
           <div className="col-span-1 flex items-center gap-1.5 justify-end">
-            <Clock className="w-3.5 h-3.5 text-cyan-400" />
+            <Clock className="w-3.5 h-3.5 text-blue-400" />
             <span>TIMESTAMP</span>
           </div>
         </div>
@@ -167,15 +167,15 @@ export default function MessagesPage() {
         {/* Message Rows */}
         {loading ? (
           <div className="stein-card p-12 text-center text-slate-400 text-xs flex justify-center items-center gap-2">
-            <RefreshCw className="w-5 h-5 animate-spin text-cyan-400" />
-            <span>Fetching triage messages from database...</span>
+            <RefreshCw className="w-4 h-4 animate-spin text-blue-400" />
+            <span>Fetching triage messages...</span>
           </div>
         ) : messages.length === 0 ? (
           <div className="stein-card p-12 text-center text-slate-500 text-xs">
             No messages match the selected criteria. Try changing the filter above.
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {messages.map((msg) => {
               const vendorName = msg.vendorId?.name || msg.metadata?.authorSignature || 'Vendor_Alpha';
               const initials = vendorName.substring(0, 2).toUpperCase();
@@ -187,18 +187,18 @@ export default function MessagesPage() {
               return (
                 <div
                   key={msg._id}
-                  className="grid grid-cols-12 gap-4 p-4 items-center bg-slate-950/70 border border-slate-800/90 rounded-2xl hover:border-cyan-500/50 hover:bg-slate-900/60 transition-all duration-300 shadow-xl group"
+                  className="grid grid-cols-12 gap-4 p-4 items-center bg-[#111827] border border-slate-800 rounded-xl hover:border-slate-700 hover:bg-[#161f33] transition-colors group"
                 >
                   {/* Col 1: Provenance */}
                   <div className="col-span-1">
                     {msg.dataSource === 'LIVE' ? (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      <span className="stein-badge-live">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                         LIVE
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold uppercase bg-amber-500/10 text-amber-400 border border-amber-500/30">
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                      <span className="stein-badge-demo">
+                        <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
                         DEMO
                       </span>
                     )}
@@ -206,10 +206,10 @@ export default function MessagesPage() {
 
                   {/* Col 2: Vendor Identity */}
                   <div className="col-span-2 flex flex-col items-center justify-center text-center">
-                    <div className="w-11 h-11 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-600/30 border border-cyan-400/40 text-cyan-300 font-bold font-mono text-sm flex items-center justify-center shadow-[0_0_12px_rgba(6,182,212,0.25)] group-hover:scale-105 transition-transform">
+                    <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 text-slate-200 font-bold font-mono text-xs flex items-center justify-center">
                       {initials}
                     </div>
-                    <span className="text-cyan-400 font-bold text-xs mt-1.5 truncate max-w-[130px]">
+                    <span className="text-slate-200 font-semibold text-xs mt-1 truncate max-w-[130px]">
                       {vendorName}
                     </span>
                   </div>
@@ -217,18 +217,18 @@ export default function MessagesPage() {
                   {/* Col 3: Message Content & Decoding */}
                   <div className="col-span-4 space-y-2">
                     <div className="flex items-start gap-2 text-slate-200 text-xs leading-relaxed">
-                      <MessageSquare className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                      <MessageSquare className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
                       <span>{msg.decodedText ?? msg.originalText ?? msg.text}</span>
                     </div>
 
                     {(msg.classification?.reasons?.length > 0 || msg.encodingDetected) && (
-                      <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-300/90 text-[11px] font-mono flex items-start gap-2">
+                      <div className="p-2.5 rounded-lg bg-amber-950/30 border border-amber-800/40 text-amber-300 text-xs font-mono flex items-start gap-2">
                         <Lightbulb className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                         <div>
-                          <span className="font-bold text-amber-300">
+                          <span className="font-semibold text-amber-300">
                             {msg.classification?.reasons?.length > 1
                               ? 'Multiple contextual signals detected:'
-                              : 'Weak contextual signal detected:'}
+                              : 'Contextual signal detected:'}
                           </span>{' '}
                           <span className="text-amber-200/90">
                             {msg.classification?.reasons?.join(' ') || (msg.classification?.signals ? msg.classification.signals.join(', ') : 'multilingual_expression.')}
@@ -242,17 +242,17 @@ export default function MessagesPage() {
                   <div className="col-span-2 space-y-2">
                     <div>
                       {label === 'SUSPICIOUS' ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-mono font-bold uppercase bg-red-500/15 text-red-400 border border-red-500/40 shadow-[0_0_12px_rgba(239,68,68,0.25)]">
+                        <span className="stein-badge-suspicious">
                           <Eye className="w-3.5 h-3.5 text-red-400" />
                           SUSPICIOUS
                         </span>
                       ) : label === 'NEEDS_REVIEW' ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-mono font-bold uppercase bg-amber-500/15 text-amber-300 border border-amber-500/40">
+                        <span className="stein-badge-review">
                           <Eye className="w-3.5 h-3.5 text-amber-400" />
                           NEEDS REVIEW
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-mono font-bold uppercase bg-slate-800 text-slate-300 border border-slate-700">
+                        <span className="stein-badge-benign">
                           <ShieldCheck className="w-3.5 h-3.5 text-slate-400" />
                           BENIGN
                         </span>
@@ -262,17 +262,17 @@ export default function MessagesPage() {
                     <div className="space-y-1">
                       <div className="text-[10px] font-mono text-slate-400">Risk Score</div>
                       <div
-                        className={`text-sm font-black font-mono ${
+                        className={`text-xs font-bold font-mono ${
                           riskScore >= 60 ? 'text-red-400' : riskScore >= 30 ? 'text-amber-400' : 'text-slate-400'
                         }`}
                       >
                         {riskScore} / 100
                       </div>
-                      <div className="w-32 h-1.5 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+                      <div className="w-32 h-1.5 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
                         <div
-                          className={`h-full rounded-full transition-all duration-500 ${
+                          className={`h-full rounded-full ${
                             riskScore >= 60
-                              ? 'bg-red-500 shadow-[0_0_8px_#ef4444]'
+                              ? 'bg-red-500'
                               : riskScore >= 30
                               ? 'bg-amber-500'
                               : 'bg-slate-600'
@@ -293,9 +293,9 @@ export default function MessagesPage() {
                         {signals.map((sig, idx) => (
                           <span
                             key={idx}
-                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-[10px] font-mono font-semibold w-fit hover:border-cyan-400/60 transition-colors"
+                            className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-blue-950/40 border border-blue-800/40 text-blue-300 text-[10px] font-mono w-fit"
                           >
-                            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
                             {sig}
                           </span>
                         ))}
